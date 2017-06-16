@@ -1,0 +1,22 @@
+{
+  "name": "try-d3",
+  "version": "0.0.1",
+  "description": "Project for trying out D3.js",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "test",
+    "build": "webpack",
+    "serve": "webpack-dev-server --progress --colors"
+  },
+  "keywords": [],
+  "author": "Florian Vogel",
+  "license": "ISC",
+  "dependencies": {
+    "d3": "^4.9.1"
+  },
+  "devDependencies": {
+    "html-webpack-plugin": "^2.28.0",
+    "webpack": "^2.6.1",
+    "webpack-dev-server": "^2.4.5"
+  }
+}
