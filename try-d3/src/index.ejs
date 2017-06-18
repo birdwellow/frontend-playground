@@ -7,6 +7,25 @@
       svg {
         background: #ccc;
       }
+      .groups {
+        cursor: pointer;
+      }
+      .groups path {
+        fill: #aaa;
+        stroke: #444;
+        stroke-width: 1px;
+      }
+      .groups:hover path {
+        fill: #722;
+        stroke: #000;
+      }
+      .groups.selected path {
+         fill: #944 !important;
+         stroke: #444 !important;
+       }
+      .groups:hover text {
+        fill: #fff;
+      }
     </style>
   </head>
   <body>
