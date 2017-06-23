@@ -1,12 +1,13 @@
-import {Component} from "@angular/core";
+import {Component, OnChanges, SimpleChanges} from "@angular/core";
 import {Country} from "./country";
+import {Point} from "./math/point";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnChanges {
 
   private countries: Array<Country> = [
     {
@@ -43,9 +44,11 @@ export class AppComponent {
     }
   ];
 
-  private change() {
-    this.countries[0].selected = !this.countries[0].selected;
-    console.log(this.countries[0].selected);
+  ngDoCheck() {
+    this.ngOnChanges();
+  }
+
+  ngOnChanges() {
   }
 
 }

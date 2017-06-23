@@ -3,10 +3,11 @@
 </h1>
 <test3dcomponent [countries]="countries"></test3dcomponent>
 
-<button (click)="change()">change</button>
-
 <div *ngFor="let country of countries">
-  <span *ngIf="country.selected">
-    {{ country.name }}
+  <span>
+    <input id="{{country.name}}" type="checkbox" [(ngModel)]="country.selected" />
+    <label for="{{country.name}}">
+      {{ country.name }}
+    </label>
   </span>
 </div>

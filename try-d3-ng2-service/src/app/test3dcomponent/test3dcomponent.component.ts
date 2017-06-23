@@ -1,7 +1,4 @@
-import {
-  Component, ElementRef, Input, IterableDiffer, IterableDiffers, OnChanges, OnInit, SimpleChanges,
-  ViewEncapsulation
-} from "@angular/core";
+import {Component, ElementRef, Input, OnChanges, OnInit, ViewEncapsulation} from "@angular/core";
 import {D3, D3Service, Selection} from "d3-ng2-service";
 import {Country} from "../country";
 
@@ -9,6 +6,8 @@ import {Country} from "../country";
   selector: 'test3dcomponent',
   templateUrl: './test3dcomponent.component.html',
   styleUrls: ['./test3dcomponent.component.css'],
+
+  // TODO: do it the standard way
   encapsulation: ViewEncapsulation.None
 })
 export class Test3dcomponentComponent implements OnInit, OnChanges {
@@ -16,6 +15,9 @@ export class Test3dcomponentComponent implements OnInit, OnChanges {
   private d3: D3;
   private parentNativeElement: any;
   private g: Selection<any, any, any, Country>;
+
+  private width: number = 960;
+  private height: number = 500;
 
   @Input()
   private countries: Array<Country> = [];
@@ -32,8 +34,10 @@ export class Test3dcomponentComponent implements OnInit, OnChanges {
 
     if (this.parentNativeElement !== null) {
       svg = d3.select("svg")
-        .attr('width', 960)
-        .attr('height', 500);
+        .attr('width', this.width)
+        .attr('height', this.height)
+        // .attr('transform', 'scale(2) translate(-300, -260)')
+      ;
 
       this.g = svg.selectAll("g")
         .data(countries)
@@ -86,6 +90,25 @@ export class Test3dcomponentComponent implements OnInit, OnChanges {
       .attr("d", function (country: Country) {
         return country.svgData;
       });
+
+    this.scale();
+  }
+
+  scale() {
+    let selectedCount = 0;
+    let selectedCountries = this.countries.filter(function (country: Country) {
+      if(selectedCount < 2) {
+        if(country.selected) {
+          selectedCount++;
+          return true;
+        }
+      }
+      return false;
+    });
+
+    if(selectedCountries.length >= 2) {
+
     }
+  }
 
 }
