@@ -56,4 +56,13 @@ export class Math2DService {
     return result;
   }
 
+  // TODO: add Unit Tests
+  public vector(start: Point, end: Point): Vector {
+    let result: Vector = {
+      start: start,
+      end: end
+    };
+    return result;
+  }
+
 }

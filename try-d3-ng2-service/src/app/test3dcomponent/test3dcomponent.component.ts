@@ -1,6 +1,9 @@
 import {Component, ElementRef, Input, OnChanges, OnInit, ViewEncapsulation} from "@angular/core";
 import {D3, D3Service, Selection} from "d3-ng2-service";
 import {Country} from "../country";
+import {Math2DService} from "../math/math2-d.service";
+import {Vector} from "../math/vector";
+import {Rect} from "../math/rect";
 
 @Component({
   selector: 'test3dcomponent',
@@ -12,9 +15,11 @@ import {Country} from "../country";
 })
 export class Test3dcomponentComponent implements OnInit, OnChanges {
 
+  private math2D: Math2DService;
   private d3: D3;
   private parentNativeElement: any;
   private g: Selection<any, any, any, Country>;
+  private svg: Selection<any, any, any, any>;
 
   private width: number = 960;
   private height: number = 500;
@@ -22,24 +27,25 @@ export class Test3dcomponentComponent implements OnInit, OnChanges {
   @Input()
   private countries: Array<Country> = [];
 
-  constructor(element: ElementRef, d3Service: D3Service) {
+  constructor(element: ElementRef, d3Service: D3Service, math2D: Math2DService) {
     this.d3 = d3Service.getD3();
     this.parentNativeElement = element.nativeElement;
+    this.math2D = math2D;
   }
 
   ngOnInit() {
     let d3 = this.d3;
-    let svg: Selection<any, any, any, any>;
     let countries = this.countries;
 
     if (this.parentNativeElement !== null) {
-      svg = d3.select("svg")
+      this.svg = d3.select("svg")
         .attr('width', this.width)
         .attr('height', this.height)
         // .attr('transform', 'scale(2) translate(-300, -260)')
       ;
+      let svg = this.svg;
 
-      this.g = svg.selectAll("g")
+      this.g = this.svg.selectAll("g")
         .data(countries)
         .enter()
         .append("g")
@@ -62,6 +68,10 @@ export class Test3dcomponentComponent implements OnInit, OnChanges {
 
       this.g.on('click', function (data) {
         data.selected = !data.selected;
+      });
+
+      this.svg.on('mousemove', function () {
+        console.log(d3.mouse(svg.node()));
       });
 
     }
@@ -106,9 +116,17 @@ export class Test3dcomponentComponent implements OnInit, OnChanges {
       return false;
     });
 
-    if(selectedCountries.length >= 2) {
+    let transformString: string = 'scale(1) translate(0, 0)';
+    if(selectedCountries.length === 2) {
+      let vector: Vector = this.math2D.vector(selectedCountries[0].center, selectedCountries[1].center);
+      let containingRect: Rect = this.math2D.getContainingRect(vector);
+      let spacedContainingRect: Rect = this.math2D.addSpacing(containingRect, 50, 50);
+      let viewPort = this.math2D.getViewPortRect(spacedContainingRect, this.width/this.height);
 
+      let scale = Math.min(this.width / viewPort.width, this.height / viewPort.height);
+      transformString = 'scale(' + scale + ') translate(' + -viewPort.pos.x + ', ' + -viewPort.pos.y + ')';
     }
+    this.svg.attr('transform', transformString);
   }
 
 }
