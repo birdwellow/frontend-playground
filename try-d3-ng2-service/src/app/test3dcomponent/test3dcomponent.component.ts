@@ -65,14 +65,24 @@ export class Test3dcomponentComponent implements OnInit, OnChanges {
         .attr("y", function (d) {
           return d.center.y;
         });
+      this.g.append("circle")
+        .attr("cx", function (d) {
+          return d.center.x;
+        })
+        .attr("cy", function (d) {
+          return d.center.y;
+        })
+        .attr("r", function () {
+          return 5;
+        });
 
       this.g.on('click', function (data) {
         data.selected = !data.selected;
       });
 
-      this.svg.on('mousemove', function () {
-        console.log(d3.mouse(svg.node()));
-      });
+      // this.svg.on('mousemove', function () {
+      //   console.log(d3.mouse(svg.node()));
+      // });
 
     }
   }

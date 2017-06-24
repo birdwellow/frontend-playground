@@ -40,11 +40,22 @@ export class Math2DService {
     let inputWidthToHeightRatio = rect.width / rect.height;
     let conserveWidth = widthToHeightRatio <= inputWidthToHeightRatio;
 
-    let width = conserveWidth ? rect.width : rect.width / inputWidthToHeightRatio * widthToHeightRatio;
-    let height = conserveWidth ? rect.height / inputWidthToHeightRatio * widthToHeightRatio : rect.height;
-    console.log(width + ', ' + height);
-    let x = conserveWidth ? rect.pos.x : (rect.pos.x - Math.abs(rect.width - width) / 2);
-    let y = !conserveWidth ? rect.pos.y : (rect.pos.y - Math.abs(rect.height - height) / 2);
+    let width = 0;
+    let height = 0;
+    let x = 0;
+    let y = 0;
+
+    if (conserveWidth) {
+      width = rect.width;
+      height = rect.width / widthToHeightRatio;
+      x = rect.pos.x;
+      y = rect.pos.y - Math.abs(rect.height - height) / 2;
+    } else {
+      height = rect.height;
+      width = rect.height * widthToHeightRatio;
+      y = rect.pos.y;
+      x = rect.pos.x - Math.abs(rect.width - width) / 2;
+    }
     let result: Rect = {
       pos: {
         x: x,
