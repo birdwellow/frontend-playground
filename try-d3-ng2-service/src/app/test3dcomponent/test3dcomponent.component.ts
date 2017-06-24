@@ -23,6 +23,7 @@ export class Test3dcomponentComponent implements OnInit, OnChanges {
 
   private width: number = 960;
   private height: number = 500;
+  private transformString: string = '';
 
   @Input()
   private countries: Array<Country> = [];
@@ -136,7 +137,16 @@ export class Test3dcomponentComponent implements OnInit, OnChanges {
       let scale = Math.min(this.width / viewPort.width, this.height / viewPort.height);
       transformString = 'scale(' + scale + ') translate(' + -viewPort.pos.x + ', ' + -viewPort.pos.y + ')';
     }
-    this.svg.attr('transform', transformString);
+
+    // IMPORTANT; if no check is perormed, the transition will be set after every tick, thus
+    // triggering ngDoCheck again and causing an infinite loop
+    if(this.transformString !== transformString) {
+      this.transformString = transformString
+      this.svg
+        .transition()
+        .duration(500)
+        .attr('transform', this.transformString);
+    }
   }
 
 }
