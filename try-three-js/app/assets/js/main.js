@@ -1,11 +1,3 @@
-/*!
- * fastshell
- * Fiercely quick and opinionated front-ends
- * https://HosseinKarami.github.io/fastshell
- * @author Hossein Karami
- * @version 1.0.5
- * Copyright 2017. MIT licensed.
- */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -44246,14 +44238,6 @@
 
 })));
 
-/*!
- * fastshell
- * Fiercely quick and opinionated front-ends
- * https://HosseinKarami.github.io/fastshell
- * @author Hossein Karami
- * @version 1.0.5
- * Copyright 2017. MIT licensed.
- */
 /**
  * @author qiao / https://github.com/qiao
  * @author mrdoob / http://mrdoob.com
@@ -45297,14 +45281,138 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
 
 } );
 
-/*!
- * fastshell
- * Fiercely quick and opinionated front-ends
- * https://HosseinKarami.github.io/fastshell
- * @author Hossein Karami
- * @version 1.0.5
- * Copyright 2017. MIT licensed.
- */
+(function (THREE) {
+
+  var checkCondition = function (evaluatedCondition, checkFailureMessage) {
+    if (!evaluatedCondition) {
+      throw new InstantiationException(checkFailureMessage);
+    }
+  };
+
+  var assertParameterIsArray = function (meshArray) {
+    checkCondition(Array.isArray(meshArray), 'Cannot instantiate - array of child elements required');
+  };
+
+  var assertArrayNotEmpty = function (meshArray) {
+    checkCondition(meshArray.length > 0, 'Cannot instantiate - array contains no child elements');
+  };
+
+  var assertCompoundMeshInstantiable = function (meshArray) {
+    assertParameterIsArray(meshArray);
+    assertArrayNotEmpty(meshArray);
+  };
+
+  THREE.CompoundMesh = function (meshArray) {
+
+    console.log(meshArray);
+
+    this.type = 'CompoundMesh';
+
+    assertCompoundMeshInstantiable(meshArray);
+
+    var parent = meshArray[0];
+
+    this.geometry = parent.geometry;
+    this.material = parent.material;
+
+    THREE.Mesh.call( this, this.geometry, this.material );
+
+    for (var i = 1; i < meshArray.length; i++) {
+      console.log('Adding ' + i);
+      var childShape = meshArray[i];
+      this.add(childShape);
+    }
+
+  };
+
+  THREE.CompoundMesh.prototype = Object.create( THREE.Mesh.prototype );
+  THREE.CompoundMesh.prototype.constructor = THREE.CompoundMesh;
+  THREE.CompoundMesh.prototype.getMesh = function() {
+    return this.mesh;
+  };
+
+
+}) (THREE);
+
+(function (global) {
+
+  var createBoxGeometry = function (dimensions) {
+    return new THREE.BoxGeometry(
+      dimensions[0],
+      dimensions[1],
+      dimensions[2]
+    );
+  };
+
+  var createCylinderGeometry = function (definition) {
+    return new THREE.CylinderGeometry(
+      definition.radii[0],
+      definition.radii[1],
+      definition.height,
+      20
+    );
+  };
+
+  var createMesh = function (geometry, definition) {
+    var material = new THREE.MeshPhongMaterial();
+    var mesh = new THREE.Mesh(geometry, material);
+    if (definition.position) {
+      mesh.position.set(
+        definition.position[0],
+        definition.position[1],
+        definition.position[2]
+      );
+    }
+    if (definition.rotation) {
+      mesh.rotateX(definition.rotation[0]/180*Math.PI);
+      mesh.rotateY(definition.rotation[1]/180*Math.PI);
+      mesh.rotateZ(definition.rotation[2]/180*Math.PI);
+    }
+
+    return mesh;
+  };
+
+  var rotate = function (mesh, rotations) {
+
+  };
+
+  var createBox = function (boxDefinition) {
+    var boxGeometry = createBoxGeometry(boxDefinition.dimensions);
+    var box = createMesh(boxGeometry, boxDefinition);
+    return box;
+  };
+
+  var createCylinder = function (cylinderDefinition) {
+    var geometry = createCylinderGeometry(cylinderDefinition);
+    var mesh = createMesh(geometry, cylinderDefinition);
+    return mesh;
+  };
+
+  var createByType = function (definition) {
+    var type = definition.type;
+    switch (type) {
+      case ("box"): return createBox(definition);
+      case ("cylinder"): return createCylinder(definition);
+      default: throw new InstantiationException('"' + type + '" is not a valid type');
+    }
+  };
+
+  THREE.JsonConfigurableMeshCompounder = {
+
+    create: function (definitions) {
+      var meshes = [];
+      for (var i in definitions) {
+        var definition = definitions[i];
+        meshes.push(createByType(definition));
+      }
+      return new THREE.CompoundMesh(meshes);
+    }
+
+  };
+
+
+}) (window);
+
 (function ($, window, document) {
 
   'use strict';
@@ -45315,8 +45423,7 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
       cameraControl,
       renderer,
 
-      earth,
-      clouds;
+      object;
 
     function createRenderer() {
       var renderer = new THREE.WebGLRenderer();
@@ -45328,36 +45435,12 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
 
     function createCamera(sceneToLookAt) {
       var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-      camera.position.x = 30;
-      camera.position.y = 0;
-      camera.position.z = 30;
+      camera.position.x = 100;
+      camera.position.y = 100;
+      camera.position.z = 100;
       camera.lookAt(sceneToLookAt.position);
       cameraControl = new THREE.OrbitControls(camera);
       return camera;
-    }
-
-    function createEarth() {
-      var earthTexture = new THREE.ImageUtils.loadTexture('assets/earthmap4k.jpg');
-      var earthGeometry = new THREE.SphereGeometry(15, 30, 30);
-      var earthMaterial = new THREE.MeshPhongMaterial({
-        map: earthTexture
-      });
-      var earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
-      earthMesh.name = 'earth';
-
-      return earthMesh;
-    }
-
-    function createClouds() {
-      var cloudTexture = new THREE.ImageUtils.loadTexture('assets/fair_clouds_4k.png');
-      var cloudGeometry = new THREE.SphereGeometry(15 * 1.01, 30, 30);
-      var cloudMaterial = new THREE.MeshPhongMaterial({
-        map: cloudTexture,
-        transparent: true
-      });
-      var cloudMesh = new THREE.Mesh(cloudGeometry, cloudMaterial);
-
-      return cloudMesh;
     }
 
     function createDirectionalLight() {
@@ -45368,21 +45451,8 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
     }
 
     function createAmbientLight() {
-      var light = new THREE.AmbientLight(0x111111);
+      var light = new THREE.AmbientLight(0x333333);
       return light;
-    }
-
-    function createBackground() {
-      var backgroundCamera = new THREE.OrthographicCamera(
-        -window.innerWidth,
-        window.innerWidth,
-        window.innerHeight,
-        -window.innerHeight,
-
-        -10000,
-        10000
-      );
-      backgroundCamera.position.z = 50;
     }
 
     function init() {
@@ -45390,11 +45460,44 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
 
       scene = new THREE.Scene();
       camera = createCamera(scene);
-      earth = createEarth();
-      clouds = createClouds();
 
-      scene.add(earth);
-      scene.add(clouds);
+      try {
+        object = THREE.JsonConfigurableMeshCompounder.create([
+          {
+            type: "box",
+            dimensions: [90, 16, 45]
+          },
+          {
+            type: "box",
+            dimensions: [60, 20, 15],
+            position: [-20, 2.5, -10]
+          },
+          {
+            type: "box",
+            dimensions: [60, 20, 15],
+            position: [-20, 2.5, 10]
+          },
+          {
+            type: "cylinder",
+            radii: [6, 4],
+            height: 50,
+            position: [70, 0, 10],
+            rotation: [0, 0, 91]
+          },
+          {
+            type: "cylinder",
+            radii: [6, 4],
+            height: 50,
+            position: [70, 0, -10],
+            rotation: [0, 0, 91]
+          }
+        ]);
+
+        scene.add(object);
+      } catch (e) {
+        console.error(e);
+      }
+
       scene.add(createDirectionalLight());
       scene.add(createAmbientLight());
 
@@ -45404,6 +45507,7 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
     }
 
     function render() {
+      // object.rotateY(0.01);
       cameraControl.update();
       renderer.render(scene, camera);
       requestAnimationFrame(render);
@@ -45418,3 +45522,12 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
   });
 
 })(jQuery, window, document, THREE);
+
+(function (global) {
+
+  global.InstantiationException = function (message) {
+    this.message = message;
+    this.name = 'InstantiationException';
+  };
+
+}) (window);

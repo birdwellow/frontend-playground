@@ -8,8 +8,7 @@
       cameraControl,
       renderer,
 
-      earth,
-      clouds;
+      object;
 
     function createRenderer() {
       var renderer = new THREE.WebGLRenderer();
@@ -21,36 +20,12 @@
 
     function createCamera(sceneToLookAt) {
       var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-      camera.position.x = 30;
-      camera.position.y = 0;
-      camera.position.z = 30;
+      camera.position.x = 100;
+      camera.position.y = 100;
+      camera.position.z = 100;
       camera.lookAt(sceneToLookAt.position);
       cameraControl = new THREE.OrbitControls(camera);
       return camera;
-    }
-
-    function createEarth() {
-      var earthTexture = new THREE.ImageUtils.loadTexture('assets/earthmap4k.jpg');
-      var earthGeometry = new THREE.SphereGeometry(15, 30, 30);
-      var earthMaterial = new THREE.MeshPhongMaterial({
-        map: earthTexture
-      });
-      var earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
-      earthMesh.name = 'earth';
-
-      return earthMesh;
-    }
-
-    function createClouds() {
-      var cloudTexture = new THREE.ImageUtils.loadTexture('assets/fair_clouds_4k.png');
-      var cloudGeometry = new THREE.SphereGeometry(15 * 1.01, 30, 30);
-      var cloudMaterial = new THREE.MeshPhongMaterial({
-        map: cloudTexture,
-        transparent: true
-      });
-      var cloudMesh = new THREE.Mesh(cloudGeometry, cloudMaterial);
-
-      return cloudMesh;
     }
 
     function createDirectionalLight() {
@@ -61,21 +36,8 @@
     }
 
     function createAmbientLight() {
-      var light = new THREE.AmbientLight(0x111111);
+      var light = new THREE.AmbientLight(0x333333);
       return light;
-    }
-
-    function createBackground() {
-      var backgroundCamera = new THREE.OrthographicCamera(
-        -window.innerWidth,
-        window.innerWidth,
-        window.innerHeight,
-        -window.innerHeight,
-
-        -10000,
-        10000
-      );
-      backgroundCamera.position.z = 50;
     }
 
     function init() {
@@ -83,11 +45,44 @@
 
       scene = new THREE.Scene();
       camera = createCamera(scene);
-      earth = createEarth();
-      clouds = createClouds();
 
-      scene.add(earth);
-      scene.add(clouds);
+      try {
+        object = THREE.JsonConfigurableMeshCompounder.create([
+          {
+            type: "box",
+            dimensions: [90, 16, 45]
+          },
+          {
+            type: "box",
+            dimensions: [60, 20, 15],
+            position: [-20, 2.5, -10]
+          },
+          {
+            type: "box",
+            dimensions: [60, 20, 15],
+            position: [-20, 2.5, 10]
+          },
+          {
+            type: "cylinder",
+            radii: [6, 4],
+            height: 50,
+            position: [70, 0, 10],
+            rotation: [0, 0, 91]
+          },
+          {
+            type: "cylinder",
+            radii: [6, 4],
+            height: 50,
+            position: [70, 0, -10],
+            rotation: [0, 0, 91]
+          }
+        ]);
+
+        scene.add(object);
+      } catch (e) {
+        console.error(e);
+      }
+
       scene.add(createDirectionalLight());
       scene.add(createAmbientLight());
 
@@ -97,6 +92,7 @@
     }
 
     function render() {
+      // object.rotateY(0.01);
       cameraControl.update();
       renderer.render(scene, camera);
       requestAnimationFrame(render);
