@@ -47,7 +47,7 @@ packageJson.gulpBuildIncludes.forEach(function (currentValue, index, array) {
 });
 
 var gulpSrc = packageJson.gulpBuildIncludes.concat([
-  'src/js/*.js'
+  'src/js/**/*.js'
 ]);
 
 console.log(gulpSrc);
@@ -55,8 +55,8 @@ console.log(gulpSrc);
 gulp.task('js',function(){
   gulp.src(gulpSrc)
     .pipe(sourcemaps.init())
-    // .pipe(jshint('.jshintrc'))
-    // .pipe(jshint.reporter('default'))
+    .pipe(jshint('.jshintrc'))
+    .pipe(jshint.reporter('default'))
     .pipe(header(banner, { package : package }))
     .pipe(concat('main.js'))
     .pipe(gulp.dest('app/assets/js'))
@@ -82,6 +82,6 @@ gulp.task('bs-reload', function () {
 
 gulp.task('default', ['css', 'js', 'browser-sync'], function () {
   gulp.watch("src/scss/**/*.scss", ['css']);
-  gulp.watch("src/js/*.js", ['js']);
+  gulp.watch("src/js/**/*.js", ['js']);
   gulp.watch("app/*.html", ['bs-reload']);
 });
