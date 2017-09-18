@@ -1,5 +1,8 @@
 (function (THREE) {
 
+  'use strict';
+
+
   var factories = {
 
     "box": createBoxGeometry = function (definition) {

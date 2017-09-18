@@ -52,7 +52,7 @@ If you're including more Gulp tasks in your project, remember to use the `npm in
 Add new tasks to either the default `gulp` task at the `gulpfile.js`:
 
 ## JavaScript
-FastShell comes with a single `scripts.js` to get you started, of course if you're building an AngularJS project or other type you're going to need to customise the structure, but this gets you started. The generic scripts file ships with an immediately-invoked function expression (IIFE):
+FastShell comes with a single `main.js` to get you started, of course if you're building an AngularJS project or other type you're going to need to customise the structure, but this gets you started. The generic scripts file ships with an immediately-invoked function expression (IIFE):
 
 ````js
 (function ($, window, document, undefined) {

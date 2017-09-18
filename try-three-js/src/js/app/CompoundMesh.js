@@ -1,5 +1,8 @@
 (function (THREE) {
 
+  'use strict';
+
+
   var checkCondition = function (evaluatedCondition, checkFailureMessage) {
     if (!evaluatedCondition) {
       throw new InstantiationException(checkFailureMessage);

@@ -1,5 +1,8 @@
 (function (THREE) {
 
+  'use strict';
+
+
   var translate = function (mesh, position) {
     if (Array.isArray(position)) {
       mesh.position.set(
