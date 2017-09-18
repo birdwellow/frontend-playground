@@ -45331,60 +45331,77 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
 
 }) (THREE);
 
-(function (global) {
+(function (THREE) {
 
-  var createBoxGeometry = function (definition) {
-    return new THREE.BoxGeometry(
-      definition.dimensions[0],
-      definition.dimensions[1],
-      definition.dimensions[2]
-    );
-  };
+  var factories = {
 
-  var createCylinderGeometry = function (definition) {
-    return new THREE.CylinderGeometry(
-      definition.radii[0],
-      definition.radii[1],
-      definition.height,
-      20
-    );
-  };
+    "box": createBoxGeometry = function (definition) {
+      return new THREE.BoxGeometry(
+        definition.dimensions[0],
+        definition.dimensions[1],
+        definition.dimensions[2]
+      );
+    },
 
-  var createExtrudeGeometry = function (definition) {
-    var points = definition.points;
-    var firstPoint = points[0];
+    "cylinder": function (definition) {
+      return new THREE.CylinderGeometry(
+        definition.radii[0],
+        definition.radii[1],
+        definition.height,
+        20
+      );
+    },
 
-    var shape = new THREE.Shape();
-    shape.moveTo(firstPoint [0], firstPoint [1]);
-    for (var i in points) {
-      var point = points[i];
-      shape.lineTo(point[0], point[1]);
+    "extrude": function (definition) {
+      var points = definition.points;
+      var firstPoint = points[0];
+
+      var shape = new THREE.Shape();
+      shape.moveTo(firstPoint [0], firstPoint [1]);
+      for (var i in points) {
+        var point = points[i];
+        shape.lineTo(point[0], point[1]);
+      }
+
+      var extrudeSettings = {
+        steps: definition.steps || 20,
+        amount: definition.amount || 20,
+        bevelEnabled: definition.bevelEnabled || true,
+        bevelThickness: 1 || definition.bevelThickness || 1,
+        bevelSize: definition.bevelSize || 1,
+        bevelSegments: 1 || definition.bevelSegments || 1
+      };
+
+      return new THREE.ExtrudeGeometry(shape, extrudeSettings);
     }
 
-    var extrudeSettings = {
-      steps: definition.steps || 20,
-      amount: definition.amount || 20,
-      bevelEnabled: definition.bevelEnabled || true,
-      bevelThickness: 1 || definition.bevelThickness || 1,
-      bevelSize: definition.bevelSize || 1,
-      bevelSegments: 1 || definition.bevelSegments || 1
-    };
-
-    return new THREE.ExtrudeGeometry( shape, extrudeSettings );
   };
 
-  var createMesh = function (geometry, definition) {
-    var material = new THREE.MeshPhongMaterial();
-    var mesh = new THREE.Mesh(geometry, material);
-    translate(mesh, definition.position);
-    rotate(mesh, definition.rotation);
+  THREE.GeometryFactory = {
 
-    return mesh;
+    createFromDefinition: function (definition) {
+      var type = definition.type;
+      if (!type) {
+        throw new InstantiationException('"' + type + '" is not a valid type');
+      }
+
+      var factory = factories[type];
+
+      if(!factory){
+        throw new InstantiationException('No factory exists for type "' + type + '"');
+      }
+
+      return factory(definition);
+    }
+
   };
+
+}) (THREE);
+
+(function (THREE) {
 
   var translate = function (mesh, position) {
     if (Array.isArray(position)) {
-      console.log("Considering position: " + position);
       mesh.position.set(
         position[0],
         position[1],
@@ -45401,21 +45418,17 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
     }
   };
 
+  var createMesh = function (geometry, definition) {
+    var material = new THREE.MeshPhongMaterial();
+    var mesh = new THREE.Mesh(geometry, material);
+    translate(mesh, definition.position);
+    rotate(mesh, definition.rotation);
+    return mesh;
+  };
+
   var createByType = function (definition) {
     var type = definition.type;
-
-    var factories = {
-      "box": createBoxGeometry,
-      "cylinder": createCylinderGeometry,
-      "extrude": createExtrudeGeometry
-    };
-
-    var factory = factories[type];
-    if(!factory){
-      throw new InstantiationException('"' + type + '" is not a valid type');
-    }
-
-    var geometry = factory(definition);
+    var geometry = THREE.GeometryFactory.createFromDefinition(definition);
     var mesh = createMesh(geometry, definition);
     return mesh;
   };
@@ -45433,8 +45446,7 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
 
   };
 
-
-}) (window);
+}) (THREE);
 
 (function ($, window, document) {
 
