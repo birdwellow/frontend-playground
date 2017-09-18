@@ -45281,6 +45281,85 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
 
 } );
 
+(function ($, window, document, THREE) {
+
+  'use strict';
+
+  $(function () {
+
+    var definitions = [
+      // {
+      //   type: "extrude",
+      //   points: [
+      //     [0, 0],
+      //     [30, 0],
+      //     [30, 10],
+      //     [15, 15],
+      //     [0, 15]
+      //   ],
+      //   position: [-10, -10, -10]
+      // },
+      // {
+      //   type: "cylinder",
+      //   radii: [6, 4],
+      //   height: 50,
+      //   position: [70, 0, -10],
+      //   rotation: [0, 0, 91]
+      // }
+      // {
+      //   "type": "box",
+      //   "dimensions": [90, 16, 45]
+      // },
+      {
+        type: "extrude",
+        points: [
+          [-45, 0],
+          [65, 0],
+          [65, 10],
+          [30, 15],
+          [-45, 15]
+        ],
+        width: 44,
+        position: [0, -10, -22]
+      },
+      {
+        "type": "box",
+        "dimensions": [60, 20, 15],
+        "position": [-20, 2.5, -10]
+      },
+      {
+        "type": "box",
+        "dimensions": [60, 20, 15],
+        "position": [-20, 2.5, 10]
+      },
+      {
+        "type": "cylinder",
+        "radii": [5, 3],
+        "height": 60,
+        "position": [60, 2, 10],
+        "rotation": [0, 0, 92]
+      },
+      {
+        "type": "cylinder",
+        "radii": [5, 3],
+        "height": 60,
+        "position": [60, 2, -10],
+        "rotation": [0, 0, 92]
+      },
+      {
+        "type": "cylinder",
+        "radii": [20, 20],
+        "height": 5,
+        "position": [0, -13, 0]
+      }
+    ];
+
+    new THREE.Room("#WebGL-output", definitions);
+
+  });
+
+})(jQuery, window, document, THREE);
+
 (function (THREE) {
 
   'use strict';
@@ -45341,7 +45420,7 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
 
   var factories = {
 
-    "box": createBoxGeometry = function (definition) {
+    "box": function (definition) {
       return new THREE.BoxGeometry(
         definition.dimensions[0],
         definition.dimensions[1],
@@ -45370,12 +45449,12 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
       }
 
       var extrudeSettings = {
-        steps: definition.steps || 20,
-        amount: definition.amount || 20,
-        bevelEnabled: definition.bevelEnabled || true,
-        bevelThickness: 1 || definition.bevelThickness || 1,
+        steps: definition.roundness || 20,
+        amount: definition.width || 20,
+        bevelEnabled: definition.bevelEnabled != undefined ? definition.bevelEnabled : true,
+        bevelThickness: definition.bevelThickness || 1,
         bevelSize: definition.bevelSize || 1,
-        bevelSegments: 1 || definition.bevelSegments || 1
+        bevelSegments: definition.bevelSegments || 1
       };
 
       return new THREE.ExtrudeGeometry(shape, extrudeSettings);
@@ -45384,6 +45463,10 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
   };
 
   THREE.GeometryFactory = {
+
+    createCenter: function (definition) {
+      return new THREE.BoxGeometry(0, 0, 0);
+    },
 
     createFromDefinition: function (definition) {
       var type = definition.type;
@@ -45446,6 +45529,7 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
 
     create: function (definitions) {
       var meshes = [];
+      meshes.push(THREE.GeometryFactory.createCenter());
       for (var i in definitions) {
         var definition = definitions[i];
         meshes.push(createByType(definition));
@@ -45507,19 +45591,22 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
     return light;
   }
 
+  function addToScene(definitions) {
+    try {
+      object = THREE.JsonConfigurableMeshCompounder.create(definitions);
+      scene.add(object);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   THREE.Room = function(elementSelector, definitions) {
     renderer = createRenderer();
 
     scene = new THREE.Scene();
     camera = createCamera(scene);
 
-    try {
-      object = THREE.JsonConfigurableMeshCompounder.create(definitions);
-      scene.add(object);
-      // scene.remove(object);
-    } catch (e) {
-      console.error(e);
-    }
+    addToScene(definitions);
 
     scene.add(createDirectionalLight());
     scene.add(createAmbientLight());
@@ -45528,42 +45615,65 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
 
     render();
 
+    this.update = function (newDefinitions) {
+      scene.remove(object);
+      addToScene(definitions);
+    }
+
   };
 
 })(jQuery, window, document, THREE);
 
-(function ($, window, document, THREE) {
+(function(THREE) {
 
-  'use strict';
+  THREE.Catalogue = THREE.Catalogue? THREE.Catalogue : {};
 
-  $(function () {
+  THREE.Catalogue.cannon = [
+    {
+      "type": "extrude",
+      "points": [
+        [-45, 0],
+        [65, 0],
+        [65, 10],
+        [30, 15],
+        [-45, 15]
+      ],
+      "width": 44,
+      "position": [0, -10, -22]
+    },
+    {
+      "type": "box",
+      "dimensions": [60, 20, 15],
+      "position": [-20, 2.5, -10]
+    },
+    {
+      "type": "box",
+      "dimensions": [60, 20, 15],
+      "position": [-20, 2.5, 10]
+    },
+    {
+      "type": "cylinder",
+      "radii": [5, 3],
+      "height": 60,
+      "position": [60, 2, 10],
+      "rotation": [0, 0, 92]
+    },
+    {
+      "type": "cylinder",
+      "radii": [5, 3],
+      "height": 60,
+      "position": [60, 2, -10],
+      "rotation": [0, 0, 92]
+    },
+    {
+      "type": "cylinder",
+      "radii": [20, 20],
+      "height": 5,
+      "position": [0, -13, 0]
+    }
+  ];
 
-    var definitions = [
-      {
-        type: "extrude",
-        points: [
-          [0, 0],
-          [30, 0],
-          [30, 10],
-          [15, 15],
-          [0, 15]
-        ],
-        position: [10, 10, 10]
-      },
-      {
-        type: "cylinder",
-        radii: [6, 4],
-        height: 50,
-        position: [70, 0, -10],
-        rotation: [0, 0, 91]
-      }
-    ];
-
-    new THREE.Room("#WebGL-output", definitions);
-
-  });
-
-})(jQuery, window, document, THREE);
+}) (THREE);
 
 (function (global) {
   

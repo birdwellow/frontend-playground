@@ -40,6 +40,7 @@
 
     create: function (definitions) {
       var meshes = [];
+      meshes.push(THREE.GeometryFactory.createCenter());
       for (var i in definitions) {
         var definition = definitions[i];
         meshes.push(createByType(definition));

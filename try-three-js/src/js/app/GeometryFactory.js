@@ -5,7 +5,7 @@
 
   var factories = {
 
-    "box": createBoxGeometry = function (definition) {
+    "box": function (definition) {
       return new THREE.BoxGeometry(
         definition.dimensions[0],
         definition.dimensions[1],
@@ -34,12 +34,12 @@
       }
 
       var extrudeSettings = {
-        steps: definition.steps || 20,
-        amount: definition.amount || 20,
-        bevelEnabled: definition.bevelEnabled || true,
-        bevelThickness: 1 || definition.bevelThickness || 1,
+        steps: definition.roundness || 20,
+        amount: definition.width || 20,
+        bevelEnabled: definition.bevelEnabled != undefined ? definition.bevelEnabled : true,
+        bevelThickness: definition.bevelThickness || 1,
         bevelSize: definition.bevelSize || 1,
-        bevelSegments: 1 || definition.bevelSegments || 1
+        bevelSegments: definition.bevelSegments || 1
       };
 
       return new THREE.ExtrudeGeometry(shape, extrudeSettings);
@@ -48,6 +48,10 @@
   };
 
   THREE.GeometryFactory = {
+
+    createCenter: function (definition) {
+      return new THREE.BoxGeometry(0, 0, 0);
+    },
 
     createFromDefinition: function (definition) {
       var type = definition.type;
