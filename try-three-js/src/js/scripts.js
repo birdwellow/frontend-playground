@@ -48,26 +48,37 @@
 
       try {
         object = THREE.JsonConfigurableMeshCompounder.create([
+          // {
+          //   type: "box",
+          //   dimensions: [90, 16, 45]
+          // },
+          // {
+          //   type: "box",
+          //   dimensions: [60, 20, 15],
+          //   position: [-20, 2.5, -10]
+          // },
+          // {
+          //   type: "box",
+          //   dimensions: [60, 20, 15],
+          //   position: [-20, 2.5, 10]
+          // },
+          // {
+          //   type: "cylinder",
+          //   radii: [6, 4],
+          //   height: 50,
+          //   position: [70, 0, 10],
+          //   rotation: [0, 0, 91]
+          // },
           {
-            type: "box",
-            dimensions: [90, 16, 45]
-          },
-          {
-            type: "box",
-            dimensions: [60, 20, 15],
-            position: [-20, 2.5, -10]
-          },
-          {
-            type: "box",
-            dimensions: [60, 20, 15],
-            position: [-20, 2.5, 10]
-          },
-          {
-            type: "cylinder",
-            radii: [6, 4],
-            height: 50,
-            position: [70, 0, 10],
-            rotation: [0, 0, 91]
+            type: "extrude",
+            points: [
+              [0, 0],
+              [30, 0],
+              [30, 10],
+              [15, 15],
+              [0, 15]
+            ],
+            position: [10, 10, 10]
           },
           {
             type: "cylinder",

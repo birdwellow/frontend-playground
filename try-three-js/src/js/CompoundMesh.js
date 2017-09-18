@@ -21,8 +21,6 @@
 
   THREE.CompoundMesh = function (meshArray) {
 
-    console.log(meshArray);
-
     this.type = 'CompoundMesh';
 
     assertCompoundMeshInstantiable(meshArray);
@@ -35,7 +33,6 @@
     THREE.Mesh.call( this, this.geometry, this.material );
 
     for (var i = 1; i < meshArray.length; i++) {
-      console.log('Adding ' + i);
       var childShape = meshArray[i];
       this.add(childShape);
     }

@@ -45304,8 +45304,6 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
 
   THREE.CompoundMesh = function (meshArray) {
 
-    console.log(meshArray);
-
     this.type = 'CompoundMesh';
 
     assertCompoundMeshInstantiable(meshArray);
@@ -45318,7 +45316,6 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
     THREE.Mesh.call( this, this.geometry, this.material );
 
     for (var i = 1; i < meshArray.length; i++) {
-      console.log('Adding ' + i);
       var childShape = meshArray[i];
       this.add(childShape);
     }
@@ -45336,11 +45333,11 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
 
 (function (global) {
 
-  var createBoxGeometry = function (dimensions) {
+  var createBoxGeometry = function (definition) {
     return new THREE.BoxGeometry(
-      dimensions[0],
-      dimensions[1],
-      dimensions[2]
+      definition.dimensions[0],
+      definition.dimensions[1],
+      definition.dimensions[2]
     );
   };
 
@@ -45353,48 +45350,74 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
     );
   };
 
+  var createExtrudeGeometry = function (definition) {
+    var points = definition.points;
+    var firstPoint = points[0];
+
+    var shape = new THREE.Shape();
+    shape.moveTo(firstPoint [0], firstPoint [1]);
+    for (var i in points) {
+      var point = points[i];
+      shape.lineTo(point[0], point[1]);
+    }
+
+    var extrudeSettings = {
+      steps: definition.steps || 20,
+      amount: definition.amount || 20,
+      bevelEnabled: definition.bevelEnabled || true,
+      bevelThickness: 1 || definition.bevelThickness || 1,
+      bevelSize: definition.bevelSize || 1,
+      bevelSegments: 1 || definition.bevelSegments || 1
+    };
+
+    return new THREE.ExtrudeGeometry( shape, extrudeSettings );
+  };
+
   var createMesh = function (geometry, definition) {
     var material = new THREE.MeshPhongMaterial();
     var mesh = new THREE.Mesh(geometry, material);
-    if (definition.position) {
+    translate(mesh, definition.position);
+    rotate(mesh, definition.rotation);
+
+    return mesh;
+  };
+
+  var translate = function (mesh, position) {
+    if (Array.isArray(position)) {
+      console.log("Considering position: " + position);
       mesh.position.set(
-        definition.position[0],
-        definition.position[1],
-        definition.position[2]
+        position[0],
+        position[1],
+        position[2]
       );
     }
-    if (definition.rotation) {
-      mesh.rotateX(definition.rotation[0]/180*Math.PI);
-      mesh.rotateY(definition.rotation[1]/180*Math.PI);
-      mesh.rotateZ(definition.rotation[2]/180*Math.PI);
+  };
+
+  var rotate = function (mesh, rotation) {
+    if (Array.isArray(rotation)) {
+      mesh.rotateX(rotation[0]/180*Math.PI);
+      mesh.rotateY(rotation[1]/180*Math.PI);
+      mesh.rotateZ(rotation[2]/180*Math.PI);
     }
-
-    return mesh;
-  };
-
-  var rotate = function (mesh, rotations) {
-
-  };
-
-  var createBox = function (boxDefinition) {
-    var boxGeometry = createBoxGeometry(boxDefinition.dimensions);
-    var box = createMesh(boxGeometry, boxDefinition);
-    return box;
-  };
-
-  var createCylinder = function (cylinderDefinition) {
-    var geometry = createCylinderGeometry(cylinderDefinition);
-    var mesh = createMesh(geometry, cylinderDefinition);
-    return mesh;
   };
 
   var createByType = function (definition) {
     var type = definition.type;
-    switch (type) {
-      case ("box"): return createBox(definition);
-      case ("cylinder"): return createCylinder(definition);
-      default: throw new InstantiationException('"' + type + '" is not a valid type');
+
+    var factories = {
+      "box": createBoxGeometry,
+      "cylinder": createCylinderGeometry,
+      "extrude": createExtrudeGeometry
+    };
+
+    var factory = factories[type];
+    if(!factory){
+      throw new InstantiationException('"' + type + '" is not a valid type');
     }
+
+    var geometry = factory(definition);
+    var mesh = createMesh(geometry, definition);
+    return mesh;
   };
 
   THREE.JsonConfigurableMeshCompounder = {
@@ -45463,26 +45486,37 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
 
       try {
         object = THREE.JsonConfigurableMeshCompounder.create([
+          // {
+          //   type: "box",
+          //   dimensions: [90, 16, 45]
+          // },
+          // {
+          //   type: "box",
+          //   dimensions: [60, 20, 15],
+          //   position: [-20, 2.5, -10]
+          // },
+          // {
+          //   type: "box",
+          //   dimensions: [60, 20, 15],
+          //   position: [-20, 2.5, 10]
+          // },
+          // {
+          //   type: "cylinder",
+          //   radii: [6, 4],
+          //   height: 50,
+          //   position: [70, 0, 10],
+          //   rotation: [0, 0, 91]
+          // },
           {
-            type: "box",
-            dimensions: [90, 16, 45]
-          },
-          {
-            type: "box",
-            dimensions: [60, 20, 15],
-            position: [-20, 2.5, -10]
-          },
-          {
-            type: "box",
-            dimensions: [60, 20, 15],
-            position: [-20, 2.5, 10]
-          },
-          {
-            type: "cylinder",
-            radii: [6, 4],
-            height: 50,
-            position: [70, 0, 10],
-            rotation: [0, 0, 91]
+            type: "extrude",
+            points: [
+              [0, 0],
+              [30, 0],
+              [30, 10],
+              [15, 15],
+              [0, 15]
+            ],
+            position: [10, 10, 10]
           },
           {
             type: "cylinder",
