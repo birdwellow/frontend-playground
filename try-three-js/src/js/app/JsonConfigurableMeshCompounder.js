@@ -21,31 +21,59 @@
     }
   };
 
+  var positionAndAdjustMesh = function (mesh, definition) {
+    translate(mesh, definition.position);
+    rotate(mesh, definition.rotation);
+  };
+
   var createMesh = function (geometry, definition) {
     var material = new THREE.MeshPhongMaterial();
     var mesh = new THREE.Mesh(geometry, material);
-    translate(mesh, definition.position);
-    rotate(mesh, definition.rotation);
+    positionAndAdjustMesh(mesh, definition);
     return mesh;
   };
 
-  var createByType = function (definition) {
-    var type = definition.type;
+  var createMeshByType = function (definition) {
     var geometry = THREE.GeometryFactory.createFromDefinition(definition);
     var mesh = createMesh(geometry, definition);
     return mesh;
   };
 
+  // TODO: Use in the next step with referenced definitions
+  // var copyObjectFields = function(sourceObject, targetObject, fieldsToSkip) {
+  //   for (var key in sourceObject) {
+  //     if(Array.isArray(fieldsToSkip) && fieldsToSkip.indexOf(key) === -1) {
+  //       var value = sourceObject[key];
+  //       targetObject[key] = value;
+  //     }
+  //   }
+  // };
+
+  var createMeshes = function (definitions) {
+    var meshes = [];
+    meshes.push(THREE.GeometryFactory.createCenter());
+    for (var i in definitions) {
+      var partialDefinition = definitions[i];
+      meshes.push(createMeshByType(partialDefinition));
+    }
+    return meshes;
+  };
+
+  var createCompoundMesh = function (definitions) {
+    var meshes = createMeshes(definitions);
+    var mesh = new THREE.CompoundMesh(meshes);
+    positionAndAdjustMesh(mesh, definitions);
+    return mesh;
+  };
+
   THREE.JsonConfigurableMeshCompounder = {
 
-    create: function (definitions) {
-      var meshes = [];
-      meshes.push(THREE.GeometryFactory.createCenter());
-      for (var i in definitions) {
-        var definition = definitions[i];
-        meshes.push(createByType(definition));
+    create: function (definition) {
+      if (Array.isArray(definition)) {
+        return createCompoundMesh(definition);
+      } else if (definition.type === "compound") {
+        return createCompoundMesh(definition.definitions);
       }
-      return new THREE.CompoundMesh(meshes);
     }
 
   };

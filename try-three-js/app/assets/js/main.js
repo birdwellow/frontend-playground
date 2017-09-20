@@ -45287,74 +45287,36 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
 
   $(function () {
 
-    var definitions = [
-      // {
-      //   type: "extrude",
-      //   points: [
-      //     [0, 0],
-      //     [30, 0],
-      //     [30, 10],
-      //     [15, 15],
-      //     [0, 15]
-      //   ],
-      //   position: [-10, -10, -10]
-      // },
-      // {
-      //   type: "cylinder",
-      //   radii: [6, 4],
-      //   height: 50,
-      //   position: [70, 0, -10],
-      //   rotation: [0, 0, 91]
-      // }
-      // {
-      //   "type": "box",
-      //   "dimensions": [90, 16, 45]
-      // },
-      {
-        type: "extrude",
-        points: [
-          [-45, 0],
-          [65, 0],
-          [65, 10],
-          [30, 15],
-          [-45, 15]
-        ],
-        width: 44,
-        position: [0, -10, -22]
-      },
-      {
-        "type": "box",
-        "dimensions": [60, 20, 15],
-        "position": [-20, 2.5, -10]
-      },
-      {
-        "type": "box",
-        "dimensions": [60, 20, 15],
-        "position": [-20, 2.5, 10]
-      },
-      {
-        "type": "cylinder",
-        "radii": [5, 3],
-        "height": 60,
-        "position": [60, 2, 10],
-        "rotation": [0, 0, 92]
-      },
-      {
-        "type": "cylinder",
-        "radii": [5, 3],
-        "height": 60,
-        "position": [60, 2, -10],
-        "rotation": [0, 0, 92]
-      },
-      {
-        "type": "cylinder",
-        "radii": [20, 20],
-        "height": 5,
-        "position": [0, -13, 0]
-      }
-    ];
+    var definition = {
+      "type": "compound",
+      "definitions": [
+        {
+          "type": "box",
+          "dimensions": [200, 2, 100]
+        },
+        {
+          "type": "box",
+          "dimensions": [50, 5, 65],
+          "position": [-85, 2, 17.5]
+        }
+      ],
+      // "position": [50, 50, 50],
+      "rotation": [5, 5, 5],
+    };
 
-    new THREE.Room("#WebGL-output", definitions);
+    // definition = [
+    //   {
+    //     "type": "box",
+    //     "dimensions": [200, 2, 100]
+    //   },
+    //   {
+    //     "type": "box",
+    //     "dimensions": [50, 5, 65],
+    //     "position": [-85, 2, 17.5]
+    //   }
+    // ];
+
+    new THREE.Room("#WebGL-output", definition);
 
   });
 
@@ -45510,31 +45472,59 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
     }
   };
 
+  var positionAndAdjustMesh = function (mesh, definition) {
+    translate(mesh, definition.position);
+    rotate(mesh, definition.rotation);
+  };
+
   var createMesh = function (geometry, definition) {
     var material = new THREE.MeshPhongMaterial();
     var mesh = new THREE.Mesh(geometry, material);
-    translate(mesh, definition.position);
-    rotate(mesh, definition.rotation);
+    positionAndAdjustMesh(mesh, definition);
     return mesh;
   };
 
-  var createByType = function (definition) {
-    var type = definition.type;
+  var createMeshByType = function (definition) {
     var geometry = THREE.GeometryFactory.createFromDefinition(definition);
     var mesh = createMesh(geometry, definition);
     return mesh;
   };
 
+  // TODO: Use in the next step with referenced definitions
+  // var copyObjectFields = function(sourceObject, targetObject, fieldsToSkip) {
+  //   for (var key in sourceObject) {
+  //     if(Array.isArray(fieldsToSkip) && fieldsToSkip.indexOf(key) === -1) {
+  //       var value = sourceObject[key];
+  //       targetObject[key] = value;
+  //     }
+  //   }
+  // };
+
+  var createMeshes = function (definitions) {
+    var meshes = [];
+    meshes.push(THREE.GeometryFactory.createCenter());
+    for (var i in definitions) {
+      var partialDefinition = definitions[i];
+      meshes.push(createMeshByType(partialDefinition));
+    }
+    return meshes;
+  };
+
+  var createCompoundMesh = function (definitions) {
+    var meshes = createMeshes(definitions);
+    var mesh = new THREE.CompoundMesh(meshes);
+    positionAndAdjustMesh(mesh, definitions);
+    return mesh;
+  };
+
   THREE.JsonConfigurableMeshCompounder = {
 
-    create: function (definitions) {
-      var meshes = [];
-      meshes.push(THREE.GeometryFactory.createCenter());
-      for (var i in definitions) {
-        var definition = definitions[i];
-        meshes.push(createByType(definition));
+    create: function (definition) {
+      if (Array.isArray(definition)) {
+        return createCompoundMesh(definition);
+      } else if (definition.type === "compound") {
+        return createCompoundMesh(definition.definitions);
       }
-      return new THREE.CompoundMesh(meshes);
     }
 
   };
@@ -45624,6 +45614,17 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
 
 })(jQuery, window, document, THREE);
 
+(function (global) {
+  
+  'use strict';
+
+  global.InstantiationException = function (message) {
+    this.message = message;
+    this.name = 'InstantiationException';
+  };
+
+}) (window);
+
 (function(THREE) {
 
   THREE.Catalogue = THREE.Catalogue? THREE.Catalogue : {};
@@ -45675,13 +45676,40 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
 
 }) (THREE);
 
-(function (global) {
-  
-  'use strict';
+(function(THREE) {
 
-  global.InstantiationException = function (message) {
-    this.message = message;
-    this.name = 'InstantiationException';
-  };
+  THREE.Catalogue = THREE.Catalogue? THREE.Catalogue : {};
 
-}) (window);
+  THREE.Catalogue.plate = [
+    {
+      "type": "box",
+      "dimensions": [200, 2, 100]
+    },
+    {
+      "type": "box",
+      "dimensions": [50, 5, 65],
+      "position": [-85, 2, 17.5]
+    },
+    {
+      "type": "box",
+      "dimensions": [50, 3, 30],
+      "position": [-75, 2, -35]
+    },
+    {
+      "type": "box",
+      "dimensions": [20, 3, 30],
+      "position": [-20, 2, -35]
+    },
+    {
+      "type": "box",
+      "dimensions": [20, 3, 30],
+      "position": [5, 2, -35]
+    },
+    {
+      "type": "box",
+      "dimensions": [20, 3, 30],
+      "position": [30, 2, -35]
+    }
+  ];
+
+}) (THREE);
