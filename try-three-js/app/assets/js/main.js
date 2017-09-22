@@ -45432,15 +45432,17 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
   };
 
   var findForName = function(name) {
-    return THREE.Catalogue[name];
+    // TODO: Search in main definition, too
+    var referredDefinition = THREE.Catalogue[name];
+    if (referredDefinition === undefined) {
+      throw new CompilationException("No object found for reference name '" + name + "'");
+    }
+    return referredDefinition
   };
 
   var compileReferenceDefinition = function (definition) {
     var name = definition.name;
     var referredDefinition = findForName(name);
-    if (!referredDefinition) {
-      throw new CompilationException("No object found for reference name '" + name + "'");
-    }
     return compile(referredDefinition);
   };
 
