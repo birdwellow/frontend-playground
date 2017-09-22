@@ -39,15 +39,14 @@
     return mesh;
   };
 
-  // TODO: Use in the next step with referenced definitions
-  // var copyObjectFields = function(sourceObject, targetObject, fieldsToSkip) {
-  //   for (var key in sourceObject) {
-  //     if(Array.isArray(fieldsToSkip) && fieldsToSkip.indexOf(key) === -1) {
-  //       var value = sourceObject[key];
-  //       targetObject[key] = value;
-  //     }
-  //   }
-  // };
+  var copyObjectFields = function(sourceObject, targetObject, fieldsToSkip) {
+    for (var key in sourceObject) {
+      if(Array.isArray(fieldsToSkip) && fieldsToSkip.indexOf(key) === -1) {
+        var value = sourceObject[key];
+        targetObject[key] = value;
+      }
+    }
+  };
 
   var createMeshes = function (definitions) {
     var meshes = [];
@@ -69,11 +68,19 @@
   THREE.JsonConfigurableMeshCompounder = {
 
     create: function (definition) {
+      var buildDefinition;
       if (Array.isArray(definition)) {
-        return createCompoundMesh(definition);
+        buildDefinition = definition;
       } else if (definition.type === "compound") {
-        return createCompoundMesh(definition.definitions);
+        buildDefinition = definition.definitions;
+      } else if (definition.type === "ref") {
+        var catalogueDefinition = THREE.Catalogue[definition.name];
+        buildDefinition = Object.create(definition);
+        buildDefinition.type = "compound";
+        buildDefinition.definitions = catalogueDefinition;
+        return THREE.JsonConfigurableMeshCompounder.create(buildDefinition);
       }
+      return createCompoundMesh(buildDefinition);
     }
 
   };
