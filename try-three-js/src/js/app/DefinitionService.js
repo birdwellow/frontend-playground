@@ -3,26 +3,9 @@
   'use strict';
 
 
-  var isObject = function (test) {
-    return test === Object(test) && !Array.isArray(test);
-  };
-
   var checkDefinitionIsObject = function (test) {
-    if (!isObject(test)) {
+    if (!THREE.ObjectUtils.isObject(test)) {
       throw new CompilationException("Definition (or part of a defintion) is not an object: " + test);
-    }
-  };
-
-  var copyObject = function (obj) {
-    return JSON.parse(JSON.stringify(obj));
-  };
-
-  var copyObjectFields = function (sourceObject, targetObject, fieldsToIgnore) {
-    for (var key in sourceObject) {
-      if (Array.isArray(fieldsToIgnore) && fieldsToIgnore.indexOf(key) !== -1) {
-        continue;
-      }
-      targetObject[key] = sourceObject[key];
     }
   };
 
@@ -38,8 +21,8 @@
   var compileReferenceDefinition = function (definition) {
     var name = definition.name;
     var referredDefinition = findForName(name);
-    var referredDefinition = copyObject(referredDefinition);
-    copyObjectFields(definition, referredDefinition, ["type", "name"]);
+    var referredDefinition = THREE.ObjectUtils.copyObject(referredDefinition);
+    THREE.ObjectUtils.copyObjectFields(definition, referredDefinition, ["type", "name"]);
     return compile(referredDefinition);
   };
 
@@ -48,7 +31,7 @@
     delete definition.repeat;
     var partsFromDefinitionRepetition = [];
     for (var j = 0; j < repeater.times; j++) {
-      var currentDefinition = copyObject(definition);
+      var currentDefinition = THREE.ObjectUtils.copyObject(definition);
       repeater.transform(currentDefinition, j);
       partsFromDefinitionRepetition.push(currentDefinition);
     }
@@ -63,7 +46,7 @@
       for (var i in definition.parts) {
         var part = definition.parts[i];
         part = compile(part);
-        if (isObject(part.repeat)) {
+        if (THREE.ObjectUtils.isObject(part.repeat)) {
           definition.parts[i] = compileRepeatingPart(part);
         } else {
           definition.parts[i] = part;
