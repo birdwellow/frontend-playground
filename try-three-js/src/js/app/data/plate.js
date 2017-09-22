@@ -4,7 +4,7 @@
 
   THREE.Catalogue.plate = {
     "type": "composite",
-    "definitions": [
+    "parts": [
       {
         "type": "box",
         "dimensions": [200, 2, 100]

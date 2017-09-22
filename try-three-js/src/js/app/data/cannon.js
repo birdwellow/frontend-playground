@@ -4,7 +4,7 @@
 
   THREE.Catalogue.cannon = {
     "type": "composite",
-    "definitions": [
+    "parts": [
       {
         "type": "extrude",
         "points": [

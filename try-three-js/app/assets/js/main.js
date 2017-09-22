@@ -45285,27 +45285,18 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
 
   'use strict';
 
-  var test = function (definition) {
-    try {
-      console.log(THREE.DefinitionService.compile(definition));
-    } catch (e) {
-      console.error(e.message);
-      console.error(e);
-    }
-  };
-
   $(function () {
 
     var testDefinition = {
       "type": "composite",
-      "definitions": [
+      "parts": [
         {
           "type": "box",
           "dimensions": [200, 2, 100]
         },
         {
           "type": "composite",
-          "definitions": [
+          "parts": [
             {
               "type": "cylinder",
               "radii": [10, 15],
@@ -45317,7 +45308,7 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
             },
             {
               "type": "composite",
-              "definitions": [
+              "parts": [
                 {
                   "type": "sphere",
                   "radius": 13,
@@ -45336,26 +45327,6 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
       // "position": [50, 50, 50],
       "rotation": [5, 5, 5],
     };
-    test(testDefinition);
-
-    testDefinition = [
-      {
-        "type": "box",
-        "dimensions": [200, 2, 100]
-      },
-      {
-        "type": "box",
-        "dimensions": [50, 5, 65],
-        "position": [-85, 2, 17.5]
-      }
-    ];
-    // test(testDefinition);
-
-    // testDefinition = {
-    //   "type": "ref",
-    //   "name": "cannon"
-    // };
-    // test(testDefinition);
 
     /*
 
@@ -45368,7 +45339,7 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
      Composite type:
      {
      "type": "composite",
-     "definitions": []
+     "parts": []
      }
 
      Reference type:
@@ -45377,6 +45348,14 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
      "name": "..."
      }
      */
+
+
+    try {
+      console.log(THREE.DefinitionService.compile(testDefinition));
+    } catch (e) {
+      console.error(e.message);
+      console.error(e);
+    }
 
     // new THREE.Room("#WebGL-output", definition);
 
@@ -45452,15 +45431,6 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
     }
   };
 
-  var copyObjectFields = function(sourceObject, targetObject, fieldsToSkip) {
-    for (var key in sourceObject) {
-      if(Array.isArray(fieldsToSkip) && fieldsToSkip.indexOf(key) === -1) {
-        var value = sourceObject[key];
-        targetObject[key] = value;
-      }
-    }
-  };
-
   var findForName = function(name) {
     return THREE.Catalogue[name];
   };
@@ -45471,20 +45441,18 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
     if (!referredDefinition) {
       throw new CompilationException("No object found for reference name '" + name + "'");
     }
-    // var referredDefinitionCopy = Object.create(referredDefinition);
-    // return compile(referredDefinitionCopy);
     return compile(referredDefinition);
   };
 
   var compileCompositeDefinition = function (definition) {
-    if (Array.isArray(definition.definitions)) {
-      for (var i in definition.definitions) {
-        var subDefinition = definition.definitions[i];
-        definition.definitions[i] = compile(subDefinition);
+    if (Array.isArray(definition.parts)) {
+      for (var i in definition.parts) {
+        var definitionPart = definition.parts[i];
+        definition.parts[i] = compile(definitionPart);
       }
     } else {
       // Make sure wrong config won't mess up the rendering
-      delete definition.definitions;
+      delete definition.parts;
     }
     return definition;
   };
@@ -45758,7 +45726,7 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
 
   THREE.Catalogue.cannon = {
     "type": "composite",
-    "definitions": [
+    "parts": [
       {
         "type": "extrude",
         "points": [
@@ -45812,7 +45780,7 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
 
   THREE.Catalogue.plate = {
     "type": "composite",
-    "definitions": [
+    "parts": [
       {
         "type": "box",
         "dimensions": [200, 2, 100]

@@ -13,15 +13,6 @@
     }
   };
 
-  var copyObjectFields = function(sourceObject, targetObject, fieldsToSkip) {
-    for (var key in sourceObject) {
-      if(Array.isArray(fieldsToSkip) && fieldsToSkip.indexOf(key) === -1) {
-        var value = sourceObject[key];
-        targetObject[key] = value;
-      }
-    }
-  };
-
   var findForName = function(name) {
     return THREE.Catalogue[name];
   };
@@ -32,20 +23,18 @@
     if (!referredDefinition) {
       throw new CompilationException("No object found for reference name '" + name + "'");
     }
-    // var referredDefinitionCopy = Object.create(referredDefinition);
-    // return compile(referredDefinitionCopy);
     return compile(referredDefinition);
   };
 
   var compileCompositeDefinition = function (definition) {
-    if (Array.isArray(definition.definitions)) {
-      for (var i in definition.definitions) {
-        var subDefinition = definition.definitions[i];
-        definition.definitions[i] = compile(subDefinition);
+    if (Array.isArray(definition.parts)) {
+      for (var i in definition.parts) {
+        var definitionPart = definition.parts[i];
+        definition.parts[i] = compile(definitionPart);
       }
     } else {
       // Make sure wrong config won't mess up the rendering
-      delete definition.definitions;
+      delete definition.parts;
     }
     return definition;
   };
