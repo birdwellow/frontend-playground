@@ -45304,7 +45304,9 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
             },
             {
               "type": "ref",
-              "name": "plate"
+              "name": "plate",
+              "position": [5, 5, 5],
+              "rotation": [0, 45, 90],
             },
             {
               "type": "composite",
@@ -45431,6 +45433,19 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
     }
   };
 
+  var copyObject = function (obj) {
+    return JSON.parse(JSON.stringify(obj));
+  };
+
+  var copyObjectFields = function (sourceObject, targetObject, fieldsToIgnore) {
+    for (var key in sourceObject) {
+      if (Array.isArray(fieldsToIgnore) && fieldsToIgnore.indexOf(key) !== -1) {
+        continue;
+      }
+      targetObject[key] = sourceObject[key];
+    }
+  };
+
   var findForName = function(name) {
     // TODO: Search in main definition, too
     var referredDefinition = THREE.Catalogue[name];
@@ -45443,6 +45458,8 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
   var compileReferenceDefinition = function (definition) {
     var name = definition.name;
     var referredDefinition = findForName(name);
+    var referredDefinition = copyObject(referredDefinition);
+    copyObjectFields(definition, referredDefinition, ["type", "name"]);
     return compile(referredDefinition);
   };
 

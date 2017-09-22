@@ -21,7 +21,9 @@
             },
             {
               "type": "ref",
-              "name": "plate"
+              "name": "plate",
+              "position": [5, 5, 5],
+              "rotation": [0, 45, 90],
             },
             {
               "type": "composite",

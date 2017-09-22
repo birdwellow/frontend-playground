@@ -13,6 +13,19 @@
     }
   };
 
+  var copyObject = function (obj) {
+    return JSON.parse(JSON.stringify(obj));
+  };
+
+  var copyObjectFields = function (sourceObject, targetObject, fieldsToIgnore) {
+    for (var key in sourceObject) {
+      if (Array.isArray(fieldsToIgnore) && fieldsToIgnore.indexOf(key) !== -1) {
+        continue;
+      }
+      targetObject[key] = sourceObject[key];
+    }
+  };
+
   var findForName = function(name) {
     // TODO: Search in main definition, too
     var referredDefinition = THREE.Catalogue[name];
@@ -25,6 +38,8 @@
   var compileReferenceDefinition = function (definition) {
     var name = definition.name;
     var referredDefinition = findForName(name);
+    var referredDefinition = copyObject(referredDefinition);
+    copyObjectFields(definition, referredDefinition, ["type", "name"]);
     return compile(referredDefinition);
   };
 
