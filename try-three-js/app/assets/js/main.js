@@ -45323,7 +45323,13 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
         },
         {
           "type": "ref",
-          "name": "cannon"
+          "name": "cannon",
+          "repeat": {
+            "times": 3,
+            "transform": function (definition, step) {
+              // return definition;
+            }
+          }
         }
       ],
       // "position": [50, 50, 50],
@@ -45463,14 +45469,33 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
     return compile(referredDefinition);
   };
 
+  var compileRepeatingPart = function (definition) {
+    var repeater = definition.repeat;
+    delete definition.repeat;
+    var partsFromDefinitionRepetition = [];
+    for (var j = 0; j < repeater.times; j++) {
+      var currentDefinition = copyObject(definition);
+      repeater.transform(currentDefinition, j);
+      partsFromDefinitionRepetition.push(currentDefinition);
+    }
+    return {
+      "type": "composite",
+      "parts": partsFromDefinitionRepetition
+    };
+  };
+
   var compileCompositeDefinition = function (definition) {
     if (Array.isArray(definition.parts)) {
       for (var i in definition.parts) {
-        var definitionPart = definition.parts[i];
-        definition.parts[i] = compile(definitionPart);
+        var part = definition.parts[i];
+        part = compile(part);
+        if (isObject(part.repeat)) {
+          definition.parts[i] = compileRepeatingPart(part);
+        } else {
+          definition.parts[i] = part;
+        }
       }
     } else {
-      // Make sure wrong config won't mess up the rendering
       delete definition.parts;
     }
     return definition;

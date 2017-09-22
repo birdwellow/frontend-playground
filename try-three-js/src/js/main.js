@@ -40,7 +40,13 @@
         },
         {
           "type": "ref",
-          "name": "cannon"
+          "name": "cannon",
+          "repeat": {
+            "times": 3,
+            "transform": function (definition, step) {
+              // return definition;
+            }
+          }
         }
       ],
       // "position": [50, 50, 50],
