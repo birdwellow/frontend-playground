@@ -45307,16 +45307,6 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
               "name": "plate",
               "position": [5, 5, 5],
               "rotation": [0, 45, 90],
-            },
-            {
-              "type": "composite",
-              "parts": [
-                {
-                  "type": "sphere",
-                  "radius": 13,
-                  "position": [1, 2, 4]
-                }
-              ]
             }
           ],
           "position": [-85, 2, 17.5]
@@ -45324,10 +45314,15 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
         {
           "type": "ref",
           "name": "cannon",
+          "position": [0, 0, 0],
           "repeat": {
-            "times": 3,
+            "times": 13,
             "transform": function (definition, step) {
-              // return definition;
+              if (!definition.position) {
+                definition.position = [0, 0, 0];
+              }
+              definition.position[1] += step * 50;
+              return definition;
             }
           }
         }
@@ -45336,36 +45331,7 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
       "rotation": [5, 5, 5],
     };
 
-    /*
-
-    Simple type (box, sphere etc.):
-    {
-      "type": "box",
-      ...
-    }
-
-     Composite type:
-     {
-     "type": "composite",
-     "parts": []
-     }
-
-     Reference type:
-     {
-     "type": "ref",
-     "name": "..."
-     }
-     */
-
-
-    try {
-      console.log(THREE.DefinitionService.compile(testDefinition));
-    } catch (e) {
-      console.error(e.message);
-      console.error(e);
-    }
-
-    // new THREE.Room("#WebGL-output", definition);
+    new THREE.Room("#WebGL-output", testDefinition);
 
   });
 
@@ -45427,6 +45393,33 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
 (function (THREE) {
 
   'use strict';
+
+  /*
+
+  There are three types of definition:
+
+       1. Simple type (box, sphere etc.):
+         {
+           "type": "box",
+           ...
+         }
+
+       2. Composite type:
+         {
+           "type": "composite",
+           "parts": [],
+           ...
+         }
+
+       3. Reference type:
+         {
+           "type": "ref",
+           "name": "...",
+           ...
+         }
+
+   */
+
 
 
   var checkDefinitionIsObject = function (test) {
@@ -45616,50 +45609,34 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
     return mesh;
   };
 
-  var copyObjectFields = function(sourceObject, targetObject, fieldsToSkip) {
-    for (var key in sourceObject) {
-      if(Array.isArray(fieldsToSkip) && fieldsToSkip.indexOf(key) === -1) {
-        var value = sourceObject[key];
-        targetObject[key] = value;
-      }
-    }
-  };
-
   var createMeshes = function (definitions) {
     var meshes = [];
     meshes.push(THREE.GeometryFactory.createCenter());
     for (var i in definitions) {
       var partialDefinition = definitions[i];
-      meshes.push(createMeshByType(partialDefinition));
+      var mesh = create(partialDefinition);
+      meshes.push(mesh);
     }
     return meshes;
   };
 
-  var createCompoundMesh = function (definitions) {
-    var meshes = createMeshes(definitions);
+  var createCompositeMesh = function (definition) {
+    var meshes = createMeshes(definition.parts);
     var mesh = new THREE.CompoundMesh(meshes);
-    positionAndAdjustMesh(mesh, definitions);
+    positionAndAdjustMesh(mesh, definition);
     return mesh;
   };
 
-  THREE.JsonConfigurableMeshCompounder = {
-
-    create: function (definition) {
-      var buildDefinition;
-      if (Array.isArray(definition)) {
-        buildDefinition = definition;
-      } else if (definition.type === "compound") {
-        buildDefinition = definition.definitions;
-      } else if (definition.type === "ref") {
-        var catalogueDefinition = THREE.Catalogue[definition.name];
-        buildDefinition = Object.create(definition);
-        buildDefinition.type = "compound";
-        buildDefinition.definitions = catalogueDefinition;
-        return THREE.JsonConfigurableMeshCompounder.create(buildDefinition);
-      }
-      return createCompoundMesh(buildDefinition);
+  var create = function (definition) {
+    if (definition.type === "composite") {
+      return createCompositeMesh(definition);
+    } else {
+      return createMeshByType(definition);
     }
+  };
 
+  THREE.JsonConfigurableMeshCompounder = {
+    create: create
   };
 
 }) (THREE);
@@ -45744,9 +45721,13 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
     return light;
   }
 
-  function addToScene(definitions) {
+  function show(rawDefinition) {
     try {
-      object = THREE.JsonConfigurableMeshCompounder.create(definitions);
+      if (object) {
+        scene.remove(object);
+      }
+      var compiledDefinition = THREE.DefinitionService.compile(rawDefinition);
+      object = THREE.JsonConfigurableMeshCompounder.create(rawDefinition);
       scene.add(object);
     } catch (e) {
       console.error(e);
@@ -45759,7 +45740,7 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
     scene = new THREE.Scene();
     camera = createCamera(scene);
 
-    addToScene(definitions);
+    show(definitions);
 
     scene.add(createDirectionalLight());
     scene.add(createAmbientLight());
@@ -45767,11 +45748,6 @@ Object.defineProperties( THREE.OrbitControls.prototype, {
     document.querySelector(elementSelector).append(renderer.domElement);
 
     render();
-
-    this.update = function (newDefinitions) {
-      scene.remove(object);
-      addToScene(definitions);
-    }
 
   };
 

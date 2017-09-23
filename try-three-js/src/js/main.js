@@ -24,16 +24,6 @@
               "name": "plate",
               "position": [5, 5, 5],
               "rotation": [0, 45, 90],
-            },
-            {
-              "type": "composite",
-              "parts": [
-                {
-                  "type": "sphere",
-                  "radius": 13,
-                  "position": [1, 2, 4]
-                }
-              ]
             }
           ],
           "position": [-85, 2, 17.5]
@@ -41,10 +31,15 @@
         {
           "type": "ref",
           "name": "cannon",
+          "position": [0, 0, 0],
           "repeat": {
-            "times": 3,
+            "times": 13,
             "transform": function (definition, step) {
-              // return definition;
+              if (!definition.position) {
+                definition.position = [0, 0, 0];
+              }
+              definition.position[1] += step * 50;
+              return definition;
             }
           }
         }
@@ -53,36 +48,7 @@
       "rotation": [5, 5, 5],
     };
 
-    /*
-
-    Simple type (box, sphere etc.):
-    {
-      "type": "box",
-      ...
-    }
-
-     Composite type:
-     {
-     "type": "composite",
-     "parts": []
-     }
-
-     Reference type:
-     {
-     "type": "ref",
-     "name": "..."
-     }
-     */
-
-
-    try {
-      console.log(THREE.DefinitionService.compile(testDefinition));
-    } catch (e) {
-      console.error(e.message);
-      console.error(e);
-    }
-
-    // new THREE.Room("#WebGL-output", definition);
+    new THREE.Room("#WebGL-output", testDefinition);
 
   });
 

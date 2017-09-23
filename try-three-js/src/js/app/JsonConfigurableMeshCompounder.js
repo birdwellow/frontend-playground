@@ -39,50 +39,34 @@
     return mesh;
   };
 
-  var copyObjectFields = function(sourceObject, targetObject, fieldsToSkip) {
-    for (var key in sourceObject) {
-      if(Array.isArray(fieldsToSkip) && fieldsToSkip.indexOf(key) === -1) {
-        var value = sourceObject[key];
-        targetObject[key] = value;
-      }
-    }
-  };
-
   var createMeshes = function (definitions) {
     var meshes = [];
     meshes.push(THREE.GeometryFactory.createCenter());
     for (var i in definitions) {
       var partialDefinition = definitions[i];
-      meshes.push(createMeshByType(partialDefinition));
+      var mesh = create(partialDefinition);
+      meshes.push(mesh);
     }
     return meshes;
   };
 
-  var createCompoundMesh = function (definitions) {
-    var meshes = createMeshes(definitions);
+  var createCompositeMesh = function (definition) {
+    var meshes = createMeshes(definition.parts);
     var mesh = new THREE.CompoundMesh(meshes);
-    positionAndAdjustMesh(mesh, definitions);
+    positionAndAdjustMesh(mesh, definition);
     return mesh;
   };
 
-  THREE.JsonConfigurableMeshCompounder = {
-
-    create: function (definition) {
-      var buildDefinition;
-      if (Array.isArray(definition)) {
-        buildDefinition = definition;
-      } else if (definition.type === "compound") {
-        buildDefinition = definition.definitions;
-      } else if (definition.type === "ref") {
-        var catalogueDefinition = THREE.Catalogue[definition.name];
-        buildDefinition = Object.create(definition);
-        buildDefinition.type = "compound";
-        buildDefinition.definitions = catalogueDefinition;
-        return THREE.JsonConfigurableMeshCompounder.create(buildDefinition);
-      }
-      return createCompoundMesh(buildDefinition);
+  var create = function (definition) {
+    if (definition.type === "composite") {
+      return createCompositeMesh(definition);
+    } else {
+      return createMeshByType(definition);
     }
+  };
 
+  THREE.JsonConfigurableMeshCompounder = {
+    create: create
   };
 
 }) (THREE);

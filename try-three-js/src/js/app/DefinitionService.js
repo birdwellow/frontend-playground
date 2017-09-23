@@ -2,6 +2,33 @@
 
   'use strict';
 
+  /*
+
+  There are three types of definition:
+
+       1. Simple type (box, sphere etc.):
+         {
+           "type": "box",
+           ...
+         }
+
+       2. Composite type:
+         {
+           "type": "composite",
+           "parts": [],
+           ...
+         }
+
+       3. Reference type:
+         {
+           "type": "ref",
+           "name": "...",
+           ...
+         }
+
+   */
+
+
 
   var checkDefinitionIsObject = function (test) {
     if (!THREE.ObjectUtils.isObject(test)) {

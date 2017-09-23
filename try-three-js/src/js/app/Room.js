@@ -48,9 +48,13 @@
     return light;
   }
 
-  function addToScene(definitions) {
+  function show(rawDefinition) {
     try {
-      object = THREE.JsonConfigurableMeshCompounder.create(definitions);
+      if (object) {
+        scene.remove(object);
+      }
+      var compiledDefinition = THREE.DefinitionService.compile(rawDefinition);
+      object = THREE.JsonConfigurableMeshCompounder.create(rawDefinition);
       scene.add(object);
     } catch (e) {
       console.error(e);
@@ -63,7 +67,7 @@
     scene = new THREE.Scene();
     camera = createCamera(scene);
 
-    addToScene(definitions);
+    show(definitions);
 
     scene.add(createDirectionalLight());
     scene.add(createAmbientLight());
@@ -71,11 +75,6 @@
     document.querySelector(elementSelector).append(renderer.domElement);
 
     render();
-
-    this.update = function (newDefinitions) {
-      scene.remove(object);
-      addToScene(definitions);
-    }
 
   };
 
