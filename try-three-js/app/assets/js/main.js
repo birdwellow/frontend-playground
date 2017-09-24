@@ -79546,7 +79546,7 @@ $provide.value("$locale", {
     camera.position.y = 100;
     camera.position.z = 100;
     camera.lookAt(sceneToLookAt.position);
-    cameraControl = new THREE.OrbitControls(camera);
+    cameraControl = new THREE.OrbitControls(camera, htmlNode);
     return camera;
   }
 
@@ -79595,6 +79595,28 @@ $provide.value("$locale", {
   };
 
 })(document, THREE);
+
+(function (global) {
+
+  'use strict';
+
+  global.CompilationException = function (message) {
+    this.message = message;
+    this.name = 'CompilationException';
+  };
+
+}) (window);
+
+(function (global) {
+  
+  'use strict';
+
+  global.InstantiationException = function (message) {
+    this.message = message;
+    this.name = 'InstantiationException';
+  };
+
+}) (window);
 
 (function(THREE) {
 
@@ -79691,28 +79713,6 @@ $provide.value("$locale", {
 
 }) (THREE);
 
-(function (global) {
-
-  'use strict';
-
-  global.CompilationException = function (message) {
-    this.message = message;
-    this.name = 'CompilationException';
-  };
-
-}) (window);
-
-(function (global) {
-  
-  'use strict';
-
-  global.InstantiationException = function (message) {
-    this.message = message;
-    this.name = 'InstantiationException';
-  };
-
-}) (window);
-
 (function () {
 
   'use strict';
@@ -79794,11 +79794,34 @@ $provide.value("$locale", {
   'use strict';
 
 
+  angular.module('Editor').directive('editorInput', function () {
+
+    return {
+      restrict: 'E',
+      template: '<div class="input" contenteditable="true"></div>',
+      replace: true,
+      scope: {
+        value: '='
+      },
+      link: function (scope, element) {
+
+      }
+    };
+
+  });
+
+})(THREE);
+
+(function (THREE) {
+
+  'use strict';
+
+
   angular.module('Editor').directive('editorPreview', function () {
 
     return {
       restrict: 'E',
-      template: '<div class="editor preview"></div>',
+      template: '<div class="preview"></div>',
       replace: true,
       scope: {
         model: '='

@@ -7,7 +7,7 @@
 
     return {
       restrict: 'E',
-      template: '<div class="editor preview"></div>',
+      template: '<div class="preview"></div>',
       replace: true,
       scope: {
         model: '='

@@ -40,7 +40,7 @@
     camera.position.y = 100;
     camera.position.z = 100;
     camera.lookAt(sceneToLookAt.position);
-    cameraControl = new THREE.OrbitControls(camera);
+    cameraControl = new THREE.OrbitControls(camera, htmlNode);
     return camera;
   }
 
