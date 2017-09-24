@@ -26,9 +26,11 @@
   },
   "gulpBuildIncludes": [
     "three/build/three.js",
-    "three/examples/js/controls/OrbitControls.js"
+    "three/examples/js/controls/OrbitControls.js",
+    "angular/angular.js"
   ],
   "dependencies": {
+    "angular": "^1.6.6",
     "three": "^0.87.1"
   }
 }

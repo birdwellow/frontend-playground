@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js">
+<html class="no-js" lang="en" ng-app="Editor">
   <head>
     <meta charset="utf-8">
     <title>Three.js App</title>
@@ -7,11 +7,24 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <style>
+      body, hmtl {
+        padding: 0;
+        margin: 0;
+      }
+      .editor {
+        width: 50%;
+        height: 500px;
+        display: inline-block;
+      }
+    </style>
+
+    <script src="assets/js/main.js"></script>
   </head>
   <body>
-    <script src="assets/components/jquery/jquery.min.js"></script>
-    <script src="assets/js/main.js"></script>
-
-    <div id="WebGL-output"></div>
+    <div ng-controller="EditorController">
+      <editor-preview model="definition"></editor-preview><div class="editor input" value="definition"></div>
+    </div>
   </body>
 </html>

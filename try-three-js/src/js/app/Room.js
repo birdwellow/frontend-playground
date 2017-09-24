@@ -1,15 +1,21 @@
-(function ($, window, document, THREE) {
+(function (document, THREE) {
 
   'use strict';
 
 
-  var element,
+  var htmlNode,
     scene,
     camera,
     cameraControl,
     renderer,
     object;
 
+  var getDimensions = function (htmlNode) {
+    return {
+      width: htmlNode.offsetWidth,
+      height: htmlNode.offsetHeight
+    };
+  };
 
   function render() {
     // object.rotateY(0.01);
@@ -21,13 +27,15 @@
   function createRenderer() {
     var renderer = new THREE.WebGLRenderer();
     renderer.setClearColor(0x000000, 1.0);
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    var dim = getDimensions(htmlNode);
+    renderer.setSize(dim.width, dim.height);
     renderer.shadowMapEnabled = true;
     return renderer;
   }
 
   function createCamera(sceneToLookAt) {
-    var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    var dim = getDimensions(htmlNode);
+    var camera = new THREE.PerspectiveCamera(45, dim.width / dim.height, 0.1, 1000);
     camera.position.x = 100;
     camera.position.y = 100;
     camera.position.z = 100;
@@ -61,8 +69,10 @@
     }
   }
 
-  THREE.Room = function(elementSelector, definitions) {
-    renderer = createRenderer();
+  THREE.Room = function(element, definitions) {
+    htmlNode = element;
+
+    renderer = createRenderer(htmlNode);
 
     scene = new THREE.Scene();
     camera = createCamera(scene);
@@ -72,10 +82,10 @@
     scene.add(createDirectionalLight());
     scene.add(createAmbientLight());
 
-    document.querySelector(elementSelector).append(renderer.domElement);
+    htmlNode.append(renderer.domElement);
 
     render();
 
   };
 
-})(jQuery, window, document, THREE);
+})(document, THREE);
