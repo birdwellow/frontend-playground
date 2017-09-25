@@ -31,13 +31,8 @@
         "position": [0, 0, 0],
         "repeat": {
           "times": 13,
-          "transform": function (definition, step) {
-            if (!definition.position) {
-              definition.position = [0, 0, 0];
-            }
-            definition.position[1] += step * 50;
-            return definition;
-          }
+          "position": [0, +50, 0],
+          "rotation": [0, +5, 0]
         }
       }
     ],

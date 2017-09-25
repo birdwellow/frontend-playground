@@ -53,13 +53,38 @@
     return compile(referredDefinition);
   };
 
+  var transformDefinition = function (definition, transformRules, iterationStep) {
+    if (!transformRules) {
+      console.warn('No transformRules given!');
+      return;
+    }
+
+    if (!definition.position) {
+      definition.position = [0, 0, 0];
+    }
+    if (transformRules && Array.isArray(transformRules.position) && definition.position.length === transformRules.position.length) {
+      for (var i in definition.position) {
+        definition.position[i] += iterationStep * transformRules.position[i];
+      }
+    }
+
+    if (!definition.rotation) {
+      definition.rotation = [0, 0, 0];
+    }
+    if (transformRules && Array.isArray(transformRules.rotation) && definition.rotation.length === transformRules.rotation.length) {
+      for (var i in definition.rotation) {
+        definition.rotation[i] += iterationStep * transformRules.rotation[i];
+      }
+    }
+  };
+
   var compileRepeatingPart = function (definition) {
     var repeater = definition.repeat;
     delete definition.repeat;
     var partsFromDefinitionRepetition = [];
     for (var j = 0; j < repeater.times; j++) {
       var currentDefinition = THREE.ObjectUtils.copyObject(definition);
-      repeater.transform(currentDefinition, j);
+      transformDefinition(currentDefinition, repeater, j);
       partsFromDefinitionRepetition.push(currentDefinition);
     }
     return {

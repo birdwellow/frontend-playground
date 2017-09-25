@@ -7,13 +7,10 @@
 
     return {
       restrict: 'E',
-      template: '<div class="input" contenteditable="true"></div>',
+      template: '<textarea class="input" ng-model="value"></textarea>',
       replace: true,
       scope: {
         value: '='
-      },
-      link: function (scope, element) {
-
       }
     };
 

@@ -79170,6 +79170,101 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
+(function(THREE) {
+
+  THREE.Catalogue = THREE.Catalogue? THREE.Catalogue : {};
+
+  THREE.Catalogue.cannon = {
+    "type": "composite",
+    "parts": [
+      {
+        "type": "extrude",
+        "points": [
+          [-45, 0],
+          [65, 0],
+          [65, 10],
+          [30, 15],
+          [-45, 15]
+        ],
+        "width": 44,
+        "position": [0, -10, -22]
+      },
+      {
+        "type": "box",
+        "dimensions": [60, 20, 15],
+        "position": [-20, 2.5, -10]
+      },
+      {
+        "type": "box",
+        "dimensions": [60, 20, 15],
+        "position": [-20, 2.5, 10]
+      },
+      {
+        "type": "cylinder",
+        "radii": [5, 3],
+        "height": 60,
+        "position": [60, 2, 10],
+        "rotation": [0, 0, 92]
+      },
+      {
+        "type": "cylinder",
+        "radii": [5, 3],
+        "height": 60,
+        "position": [60, 2, -10],
+        "rotation": [0, 0, 92]
+      },
+      {
+        "type": "cylinder",
+        "radii": [20, 20],
+        "height": 5,
+        "position": [0, -13, 0]
+      }
+    ]
+  };
+
+}) (THREE);
+
+(function(THREE) {
+
+  THREE.Catalogue = THREE.Catalogue? THREE.Catalogue : {};
+
+  THREE.Catalogue.plate = {
+    "type": "composite",
+    "parts": [
+      {
+        "type": "box",
+        "dimensions": [200, 2, 100]
+      },
+      {
+        "type": "box",
+        "dimensions": [50, 5, 65],
+        "position": [-85, 2, 17.5]
+      },
+      {
+        "type": "box",
+        "dimensions": [50, 3, 30],
+        "position": [-75, 2, -35]
+      },
+      {
+        "type": "box",
+        "dimensions": [20, 3, 30],
+        "position": [-20, 2, -35]
+      },
+      {
+        "type": "box",
+        "dimensions": [20, 3, 30],
+        "position": [5, 2, -35]
+      },
+      {
+        "type": "box",
+        "dimensions": [20, 3, 30],
+        "position": [30, 2, -35]
+      }
+    ]
+  };
+
+}) (THREE);
+
 (function (THREE) {
 
   'use strict';
@@ -79278,13 +79373,38 @@ $provide.value("$locale", {
     return compile(referredDefinition);
   };
 
+  var transformDefinition = function (definition, transformRules, iterationStep) {
+    if (!transformRules) {
+      console.warn('No transformRules given!');
+      return;
+    }
+
+    if (!definition.position) {
+      definition.position = [0, 0, 0];
+    }
+    if (transformRules && Array.isArray(transformRules.position) && definition.position.length === transformRules.position.length) {
+      for (var i in definition.position) {
+        definition.position[i] += iterationStep * transformRules.position[i];
+      }
+    }
+
+    if (!definition.rotation) {
+      definition.rotation = [0, 0, 0];
+    }
+    if (transformRules && Array.isArray(transformRules.rotation) && definition.rotation.length === transformRules.rotation.length) {
+      for (var i in definition.rotation) {
+        definition.rotation[i] += iterationStep * transformRules.rotation[i];
+      }
+    }
+  };
+
   var compileRepeatingPart = function (definition) {
     var repeater = definition.repeat;
     delete definition.repeat;
     var partsFromDefinitionRepetition = [];
     for (var j = 0; j < repeater.times; j++) {
       var currentDefinition = THREE.ObjectUtils.copyObject(definition);
-      repeater.transform(currentDefinition, j);
+      transformDefinition(currentDefinition, repeater, j);
       partsFromDefinitionRepetition.push(currentDefinition);
     }
     return {
@@ -79583,7 +79703,8 @@ $provide.value("$locale", {
     scene = new THREE.Scene();
     camera = createCamera(scene);
 
-    show(definitions);
+    var definitionCopy = THREE.ObjectUtils.copyObject(definitions);
+    show(definitionCopy);
 
     scene.add(createDirectionalLight());
     scene.add(createAmbientLight());
@@ -79592,126 +79713,11 @@ $provide.value("$locale", {
 
     render();
 
+    this.update = show;
+
   };
 
 })(document, THREE);
-
-(function (global) {
-
-  'use strict';
-
-  global.CompilationException = function (message) {
-    this.message = message;
-    this.name = 'CompilationException';
-  };
-
-}) (window);
-
-(function (global) {
-  
-  'use strict';
-
-  global.InstantiationException = function (message) {
-    this.message = message;
-    this.name = 'InstantiationException';
-  };
-
-}) (window);
-
-(function(THREE) {
-
-  THREE.Catalogue = THREE.Catalogue? THREE.Catalogue : {};
-
-  THREE.Catalogue.cannon = {
-    "type": "composite",
-    "parts": [
-      {
-        "type": "extrude",
-        "points": [
-          [-45, 0],
-          [65, 0],
-          [65, 10],
-          [30, 15],
-          [-45, 15]
-        ],
-        "width": 44,
-        "position": [0, -10, -22]
-      },
-      {
-        "type": "box",
-        "dimensions": [60, 20, 15],
-        "position": [-20, 2.5, -10]
-      },
-      {
-        "type": "box",
-        "dimensions": [60, 20, 15],
-        "position": [-20, 2.5, 10]
-      },
-      {
-        "type": "cylinder",
-        "radii": [5, 3],
-        "height": 60,
-        "position": [60, 2, 10],
-        "rotation": [0, 0, 92]
-      },
-      {
-        "type": "cylinder",
-        "radii": [5, 3],
-        "height": 60,
-        "position": [60, 2, -10],
-        "rotation": [0, 0, 92]
-      },
-      {
-        "type": "cylinder",
-        "radii": [20, 20],
-        "height": 5,
-        "position": [0, -13, 0]
-      }
-    ]
-  };
-
-}) (THREE);
-
-(function(THREE) {
-
-  THREE.Catalogue = THREE.Catalogue? THREE.Catalogue : {};
-
-  THREE.Catalogue.plate = {
-    "type": "composite",
-    "parts": [
-      {
-        "type": "box",
-        "dimensions": [200, 2, 100]
-      },
-      {
-        "type": "box",
-        "dimensions": [50, 5, 65],
-        "position": [-85, 2, 17.5]
-      },
-      {
-        "type": "box",
-        "dimensions": [50, 3, 30],
-        "position": [-75, 2, -35]
-      },
-      {
-        "type": "box",
-        "dimensions": [20, 3, 30],
-        "position": [-20, 2, -35]
-      },
-      {
-        "type": "box",
-        "dimensions": [20, 3, 30],
-        "position": [5, 2, -35]
-      },
-      {
-        "type": "box",
-        "dimensions": [20, 3, 30],
-        "position": [30, 2, -35]
-      }
-    ]
-  };
-
-}) (THREE);
 
 (function () {
 
@@ -79755,13 +79761,8 @@ $provide.value("$locale", {
         "position": [0, 0, 0],
         "repeat": {
           "times": 13,
-          "transform": function (definition, step) {
-            if (!definition.position) {
-              definition.position = [0, 0, 0];
-            }
-            definition.position[1] += step * 50;
-            return definition;
-          }
+          "position": [0, +50, 0],
+          "rotation": [0, +5, 0]
         }
       }
     ],
@@ -79782,7 +79783,7 @@ $provide.value("$locale", {
 
     function ($scope, $element) {
 
-      $scope.definition = THREE.defaultDefinition;
+      $scope.definition = JSON.stringify(THREE.defaultDefinition, null, 4);
 
     }
   ]);
@@ -79798,13 +79799,10 @@ $provide.value("$locale", {
 
     return {
       restrict: 'E',
-      template: '<div class="input" contenteditable="true"></div>',
+      template: '<textarea class="input" ng-model="value"></textarea>',
       replace: true,
       scope: {
         value: '='
-      },
-      link: function (scope, element) {
-
       }
     };
 
@@ -79827,11 +79825,38 @@ $provide.value("$locale", {
         model: '='
       },
       link: function (scope, element) {
+
         var nativeElement = angular.element(element)[0];
-        new THREE.Room(nativeElement, scope.model);
+        var room = new THREE.Room(nativeElement, JSON.parse(scope.model));
+
+        scope.$watch('model', function () {
+          room.update(JSON.parse(scope.model));
+        });
       }
     };
 
   });
 
 })(THREE);
+
+(function (global) {
+
+  'use strict';
+
+  global.CompilationException = function (message) {
+    this.message = message;
+    this.name = 'CompilationException';
+  };
+
+}) (window);
+
+(function (global) {
+  
+  'use strict';
+
+  global.InstantiationException = function (message) {
+    this.message = message;
+    this.name = 'InstantiationException';
+  };
+
+}) (window);

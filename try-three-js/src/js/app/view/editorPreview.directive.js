@@ -13,8 +13,13 @@
         model: '='
       },
       link: function (scope, element) {
+
         var nativeElement = angular.element(element)[0];
-        new THREE.Room(nativeElement, scope.model);
+        var room = new THREE.Room(nativeElement, JSON.parse(scope.model));
+
+        scope.$watch('model', function () {
+          room.update(JSON.parse(scope.model));
+        });
       }
     };
 

@@ -77,7 +77,8 @@
     scene = new THREE.Scene();
     camera = createCamera(scene);
 
-    show(definitions);
+    var definitionCopy = THREE.ObjectUtils.copyObject(definitions);
+    show(definitionCopy);
 
     scene.add(createDirectionalLight());
     scene.add(createAmbientLight());
@@ -85,6 +86,8 @@
     htmlNode.append(renderer.domElement);
 
     render();
+
+    this.update = show;
 
   };
 

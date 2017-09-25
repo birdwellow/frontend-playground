@@ -9,7 +9,7 @@
 
     function ($scope, $element) {
 
-      $scope.definition = THREE.defaultDefinition;
+      $scope.definition = JSON.stringify(THREE.defaultDefinition, null, 4);
 
     }
   ]);
