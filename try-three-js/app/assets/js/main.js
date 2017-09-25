@@ -79265,6 +79265,28 @@ $provide.value("$locale", {
 
 }) (THREE);
 
+(function (global) {
+
+  'use strict';
+
+  global.CompilationException = function (message) {
+    this.message = message;
+    this.name = 'CompilationException';
+  };
+
+}) (window);
+
+(function (global) {
+  
+  'use strict';
+
+  global.InstantiationException = function (message) {
+    this.message = message;
+    this.name = 'InstantiationException';
+  };
+
+}) (window);
+
 (function (THREE) {
 
   'use strict';
@@ -79838,25 +79860,3 @@ $provide.value("$locale", {
   });
 
 })(THREE);
-
-(function (global) {
-
-  'use strict';
-
-  global.CompilationException = function (message) {
-    this.message = message;
-    this.name = 'CompilationException';
-  };
-
-}) (window);
-
-(function (global) {
-  
-  'use strict';
-
-  global.InstantiationException = function (message) {
-    this.message = message;
-    this.name = 'InstantiationException';
-  };
-
-}) (window);

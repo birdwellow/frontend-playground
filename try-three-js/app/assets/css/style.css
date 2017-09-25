@@ -12,16 +12,14 @@
   font-smoothing: antialiased;
   text-rendering: optimizeLegibility; }
 
-html {
-  font-size: 62.5%;
-  background: radial-gradient(ellipse at center, #F7F6F0 0, #c2ba8c 80%, #b0a66b 100%); }
-
 body {
   font: 300 13px/1.6 'Helvetica Neue', Helvetica, Arial;
   color: #444;
   transition: all .4s .3s ease-in; }
 
 body, html {
+  padding: 0;
+  margin: 0;
   min-height: 100vh;
   overflow: hidden; }
 
@@ -245,8 +243,6 @@ button,
 input,
 select,
 textarea {
-  font: inherit;
-  /* 1 */
   margin: 0;
   /* 2 */ }
 
@@ -407,11 +403,6 @@ textarea {
   font-weight: normal;
   font-style: normal; }
 
-::-moz-selection {
-  background: #333;
-  color: #fff;
-  text-shadow: none; }
-
 ::selection {
   background: #333;
   color: #fff;
@@ -426,6 +417,22 @@ textarea {
   background: #333;
   color: #fff;
   text-shadow: none; }
+
+.editor {
+  width: 100%;
+  height: 500px; }
+  .editor td {
+    width: 50%;
+    height: 100%; }
+  .editor .preview {
+    height: 100%; }
+  .editor .input {
+    border: 0;
+    padding: 10px;
+    width: 100%;
+    height: 100%;
+    color: #007aff;
+    background: #dddf; }
 
 @media print {
   * {

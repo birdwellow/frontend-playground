@@ -1,27 +1,12 @@
 var gulp = require('gulp'),
     gutil = require('gulp-util'),
+    sass = require('gulp-sass'),
     browserSync = require('browser-sync'),
-    autoprefixer = require('gulp-autoprefixer'),
     uglify = require('gulp-uglify'),
     jshint = require('gulp-jshint'),
-    header  = require('gulp-header'),
     rename = require('gulp-rename'),
-    sourcemaps = require('gulp-sourcemaps'),
-    package = require('./package.json'),
     concat = require('gulp-concat');
 
-
-var banner = [
-  '/*!\n' +
-  ' * <%= package.name %>\n' +
-  ' * <%= package.title %>\n' +
-  ' * <%= package.url %>\n' +
-  ' * @author <%= package.author %>\n' +
-  ' * @version <%= package.version %>\n' +
-  ' * Copyright ' + new Date().getFullYear() + '. <%= package.license %> licensed.\n' +
-  ' */',
-  '\n'
-].join('');
 
 var packageJson = require('./package.json');
 
@@ -34,23 +19,28 @@ var gulpSrc = packageJson.gulpBuildIncludes.concat([
   'src/js/**/*.js'
 ]);
 
-console.log(gulpSrc);
-
 gulp.task('js',function(){
   gulp.src(gulpSrc)
-    // .pipe(sourcemaps.init())
-    // .pipe(jshint('.jshintrc'))
-    // .pipe(jshint.reporter('default'))
-    // .pipe(header(banner, { package : package }))
+    .pipe(jshint('.jshintrc'))
+    .pipe(jshint.reporter('default'))
     .pipe(concat('main.js'))
     .pipe(gulp.dest('app/assets/js'))
-    // .pipe(uglify())
-    .on('error', function (err) { gutil.log(gutil.colors.red('[Error]'), err.toString()); })
-    // .pipe(header(banner, { package : package }))
-    // .pipe(rename({ suffix: '.min' }))
-    // .pipe(sourcemaps.write())
-    // .pipe(gulp.dest('app/assets/js'))
+    .pipe(uglify())
+    .on('error', function (err) {
+      gutil.log(gutil.colors.red('[Error]'),
+        err.toString()
+      );
+    })
+    .pipe(rename({ suffix: '.min' }))
+    .pipe(gulp.dest('app/assets/js'))
     .pipe(browserSync.reload({stream:true, once: true}));
+});
+
+gulp.task('css', function () {
+  return gulp.src('src/scss/style.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('app/assets/css'))
+    .pipe(browserSync.reload({stream:true}));
 });
 
 gulp.task('browser-sync', function() {
@@ -64,7 +54,8 @@ gulp.task('bs-reload', function () {
     browserSync.reload();
 });
 
-gulp.task('default', ['js', 'browser-sync'], function () {
+gulp.task('default', ['css', 'js', 'browser-sync'], function () {
+    gulp.watch("src/scss/**/*.scss", ['css']);
     gulp.watch("src/js/**/*.js", ['js']);
     gulp.watch("app/*.html", ['bs-reload']);
 });
