@@ -7,7 +7,8 @@
 
     return {
       restrict: 'E',
-      template: '<textarea class="input" ng-model="value"></textarea>',
+      // template: '<textarea class="input" ng-model="value"></textarea>',
+      templateUrl: 'html/editorInput.directive.html',
       replace: true,
       scope: {
         value: '='

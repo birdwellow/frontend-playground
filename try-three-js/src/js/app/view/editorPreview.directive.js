@@ -7,7 +7,7 @@
 
     return {
       restrict: 'E',
-      template: '<div class="preview"></div>',
+      templateUrl: 'html/editorPreview.directive.html',
       replace: true,
       scope: {
         model: '='

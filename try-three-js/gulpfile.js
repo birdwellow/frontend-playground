@@ -21,23 +21,20 @@ var gulpSrc = packageJson.gulpBuildIncludes.concat([
 
 gulp.task('js',function(){
   gulp.src(gulpSrc)
-    .pipe(jshint('.jshintrc'))
-    .pipe(jshint.reporter('default'))
+    // .pipe(jshint('.jshintrc'))
+    // .pipe(jshint.reporter('default'))
     .pipe(concat('main.js'))
     .pipe(gulp.dest('dist/js'))
-    .pipe(uglify())
     .on('error', function (err) {
       gutil.log(gutil.colors.red('[Error]'),
         err.toString()
       );
     })
-    .pipe(rename({ suffix: '.min' }))
-    .pipe(gulp.dest('dist/js'))
     .pipe(browserSync.reload({stream:true, once: true}));
 });
 
 gulp.task('html',function(){
-  gulp.src('src/index.html')
+  gulp.src('src/**/*.html')
     .pipe(gulp.dest('dist/'))
     .pipe(browserSync.reload({stream:true, once: true}));
 });
