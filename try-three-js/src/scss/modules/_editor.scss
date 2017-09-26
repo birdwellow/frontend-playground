@@ -1,23 +1,43 @@
 .editor {
   width: 100%;
   height: 100vh;
+  display: table;
 
-  td {
-    width: 50%;
-    height: 100%;
-  }
-
-  .preview {
-    height: 100%;
-  }
-
-  .input {
-    border: 0;
+  .controls {
+    display: table-caption;
+    background: #eee;
     padding: 10px;
     width: 100%;
-    height: 100%;
-    color: #fff;
-    background: #005855;
+
+    &.error {
+      background: #f88;
+    }
+  }
+
+  & > * {
+    display: table-row;
+
+    & > * {
+      display: table-cell;
+      width: 50%;
+      height: 100%;
+    }
+
+    .preview {
+      width: 70%;
+      height: 100%;
+    }
+
+    .input {
+      border: 0;
+      padding: 10px;
+      width: 100%;
+      height: 100%;
+      color: #fff;
+      background: #005855;
+    }
+
   }
 
 }
+

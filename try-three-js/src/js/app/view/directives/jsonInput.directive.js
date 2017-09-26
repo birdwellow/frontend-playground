@@ -3,11 +3,11 @@
   'use strict';
 
 
-  angular.module('Editor').directive('editorInput', function () {
+  angular.module('Editor').directive('jsonInput', function () {
 
     return {
       restrict: 'E',
-      templateUrl: 'js/app/view/directives/editorInput.directive.html',
+      templateUrl: 'js/app/view/directives/jsonInput.directive.html',
       replace: true,
       scope: {
         value: '='
