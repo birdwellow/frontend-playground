@@ -1,4 +1,4 @@
-(function (THREE) {
+THREE = (function (THREE) {
 
   'use strict';
 
@@ -48,5 +48,6 @@
     return this.mesh;
   };
 
+  return THREE;
 
-}) (THREE);
+}) (THREE || {});

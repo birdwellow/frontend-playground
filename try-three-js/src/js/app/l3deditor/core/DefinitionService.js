@@ -1,4 +1,4 @@
-(function (THREE) {
+L3DEditor = (function (L3DEditor) {
 
   'use strict';
 
@@ -31,14 +31,14 @@
 
 
   var checkDefinitionIsObject = function (test) {
-    if (!THREE.ObjectUtils.isObject(test)) {
+    if (!L3DEditor.ObjectUtils.isObject(test)) {
       throw new CompilationException("Definition (or part of a defintion) is not an object: " + test);
     }
   };
 
   var findForName = function(name) {
     // TODO: Search in main definition, too
-    var referredDefinition = THREE.Catalogue[name];
+    var referredDefinition = L3DEditor.Catalogue[name];
     if (referredDefinition === undefined) {
       throw new CompilationException("No object found for reference name '" + name + "'");
     }
@@ -48,8 +48,8 @@
   var compileReferenceDefinition = function (definition) {
     var name = definition.name;
     var referredDefinition = findForName(name);
-    var referredDefinition = THREE.ObjectUtils.copyObject(referredDefinition);
-    THREE.ObjectUtils.copyObjectFields(definition, referredDefinition, ["type", "name"]);
+    var referredDefinition = L3DEditor.ObjectUtils.copyObject(referredDefinition);
+    L3DEditor.ObjectUtils.copyObjectFields(definition, referredDefinition, ["type", "name"]);
     return compile(referredDefinition);
   };
 
@@ -83,7 +83,7 @@
     delete definition.repeat;
     var partsFromDefinitionRepetition = [];
     for (var j = 0; j < repeater.times; j++) {
-      var currentDefinition = THREE.ObjectUtils.copyObject(definition);
+      var currentDefinition = L3DEditor.ObjectUtils.copyObject(definition);
       transformDefinition(currentDefinition, repeater, j);
       partsFromDefinitionRepetition.push(currentDefinition);
     }
@@ -98,7 +98,7 @@
       for (var i in definition.parts) {
         var part = definition.parts[i];
         part = compile(part);
-        if (THREE.ObjectUtils.isObject(part.repeat)) {
+        if (L3DEditor.ObjectUtils.isObject(part.repeat)) {
           definition.parts[i] = compileRepeatingPart(part);
         } else {
           definition.parts[i] = part;
@@ -120,9 +120,11 @@
     return definition;
   };
 
-  THREE.DefinitionService = {
+  L3DEditor.DefinitionService = {
     findForName: findForName,
     compile: compile
   };
 
-}) (THREE);
+  return L3DEditor;
+
+}) (L3DEditor || {});

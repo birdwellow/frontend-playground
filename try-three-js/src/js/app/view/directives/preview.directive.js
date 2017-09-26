@@ -1,4 +1,4 @@
-(function (THREE) {
+(function (L3DEditor) {
 
   'use strict';
 
@@ -16,7 +16,7 @@
       link: function (scope, element) {
 
         var nativeElement = angular.element(element)[0];
-        var room = new THREE.Room(nativeElement, JSON.parse(scope.definition));
+        var room = new L3DEditor.Room(nativeElement, JSON.parse(scope.definition));
 
         scope.$watch('definition', function () {
 
@@ -34,4 +34,4 @@
 
   });
 
-})(THREE);
+})(L3DEditor);

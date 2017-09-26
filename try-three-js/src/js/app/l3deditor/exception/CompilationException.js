@@ -1,10 +1,10 @@
-(function (global) {
+CompilationException = (function () {
 
   'use strict';
 
-  global.CompilationException = function (message) {
+  return function (message) {
     this.message = message;
     this.name = 'CompilationException';
   };
 
-}) (window);
+}) ();

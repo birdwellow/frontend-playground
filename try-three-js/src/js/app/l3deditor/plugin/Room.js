@@ -1,4 +1,4 @@
-(function (document, THREE) {
+(function (THREE, L3DEditor) {
 
   'use strict';
 
@@ -61,15 +61,15 @@
       if (object) {
         scene.remove(object);
       }
-      var compiledDefinition = THREE.DefinitionService.compile(rawDefinition);
-      object = THREE.JsonConfigurableMeshCompounder.create(rawDefinition);
+      var compiledDefinition = L3DEditor.DefinitionService.compile(rawDefinition);
+      object = L3DEditor.ConfigurableCompoundMeshBuilder.create(rawDefinition);
       scene.add(object);
     } catch (e) {
       console.error(e);
     }
   }
 
-  THREE.Room = function(element, definitions) {
+  L3DEditor.Room = function(element, definitions) {
     htmlNode = element;
 
     renderer = createRenderer(htmlNode);
@@ -77,7 +77,7 @@
     scene = new THREE.Scene();
     camera = createCamera(scene);
 
-    var definitionCopy = THREE.ObjectUtils.copyObject(definitions);
+    var definitionCopy = L3DEditor.ObjectUtils.copyObject(definitions);
     show(definitionCopy);
 
     scene.add(createDirectionalLight());
@@ -91,4 +91,6 @@
 
   };
 
-})(document, THREE);
+  return L3DEditor;
+
+})(THREE || {}, L3DEditor || {});

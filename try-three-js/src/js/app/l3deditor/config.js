@@ -1,7 +1,6 @@
-(function (THREE) {
+L3DEditor = (function (L3DEditor) {
 
-
-  THREE.defaultDefinition = {
+  L3DEditor.defaultDefinition = {
     "type": "composite",
     "parts": [
       {
@@ -40,4 +39,4 @@
     "rotation": [5, 5, 5],
   };
 
-})(THREE);
+})(L3DEditor || {});

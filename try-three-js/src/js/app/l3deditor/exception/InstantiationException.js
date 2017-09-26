@@ -1,10 +1,10 @@
-(function (global) {
-  
+InstantiationException = (function () {
+
   'use strict';
 
-  global.InstantiationException = function (message) {
+  return function (message) {
     this.message = message;
     this.name = 'InstantiationException';
   };
 
-}) (window);
+}) ();

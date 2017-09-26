@@ -1,4 +1,4 @@
-(function (THREE) {
+L3DEditor = (function (THREE, L3DEditor) {
 
   'use strict';
 
@@ -34,14 +34,14 @@
   };
 
   var createMeshByType = function (definition) {
-    var geometry = THREE.GeometryFactory.createFromDefinition(definition);
+    var geometry = L3DEditor.GeometryFactory.createFromDefinition(definition);
     var mesh = createMesh(geometry, definition);
     return mesh;
   };
 
   var createMeshes = function (definitions) {
     var meshes = [];
-    meshes.push(THREE.GeometryFactory.createCenter());
+    meshes.push(L3DEditor.GeometryFactory.createCenter());
     for (var i in definitions) {
       var partialDefinition = definitions[i];
       var mesh = create(partialDefinition);
@@ -65,8 +65,10 @@
     }
   };
 
-  THREE.JsonConfigurableMeshCompounder = {
+  L3DEditor.ConfigurableCompoundMeshBuilder = {
     create: create
   };
 
-}) (THREE);
+  return L3DEditor;
+
+}) (THREE || {}, L3DEditor || {});

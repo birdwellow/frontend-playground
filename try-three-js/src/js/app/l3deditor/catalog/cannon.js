@@ -1,8 +1,11 @@
-(function(THREE) {
+var L3DEditor = (function(L3DEditor) {
 
-  THREE.Catalogue = THREE.Catalogue? THREE.Catalogue : {};
+  'use strict';
 
-  THREE.Catalogue.cannon = {
+
+  var Catalogue = L3DEditor.Catalogue || {};
+
+  Catalogue.cannon = {
     "type": "composite",
     "parts": [
       {
@@ -50,4 +53,8 @@
     ]
   };
 
-}) (THREE);
+  L3DEditor.Catalogue = Catalogue;
+
+  return L3DEditor;
+
+}) (L3DEditor || {});

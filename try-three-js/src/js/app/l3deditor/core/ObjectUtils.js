@@ -1,4 +1,4 @@
-(function (THREE) {
+L3DEditor = (function (L3DEditor) {
 
   'use strict';
 
@@ -20,10 +20,12 @@
     }
   };
 
-  THREE.ObjectUtils = {
+  L3DEditor.ObjectUtils = {
     isObject: isObject,
     copyObject: copyObject,
     copyObjectFields: copyObjectFields
   };
 
-}) (THREE);
+  return L3DEditor;
+
+}) (L3DEditor || {});

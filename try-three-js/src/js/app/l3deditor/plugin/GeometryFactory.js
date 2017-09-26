@@ -1,4 +1,4 @@
-(function (THREE) {
+L3DEditor = (function (THREE, L3DEditor) {
 
   'use strict';
 
@@ -47,7 +47,7 @@
 
   };
 
-  THREE.GeometryFactory = {
+  L3DEditor.GeometryFactory = {
 
     createCenter: function (definition) {
       return new THREE.BoxGeometry(0, 0, 0);
@@ -70,4 +70,6 @@
 
   };
 
-}) (THREE);
+  return L3DEditor;
+
+}) (THREE || {}, L3DEditor || {});
