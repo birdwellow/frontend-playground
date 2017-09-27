@@ -1,3 +1,9 @@
 <div class="controls" ng-class="{'error': error}">
-  Controls
+  <div class="preview-controls">
+    <input type="checkbox" name="isRotationActive" id="isRotationActive" ng-model="config.isRotationActive">
+    <label for="isRotationActive">Rotation</label>
+  </div>
+  <div class="input-controls">
+    <button ng-click="format()">Format</button>
+  </div>
 </div>

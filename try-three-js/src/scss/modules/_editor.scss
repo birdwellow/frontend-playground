@@ -4,23 +4,24 @@
   display: table;
 
   .controls {
-    display: table-caption;
     background: #eee;
-    padding: 10px;
     width: 100%;
+
+    & > div {
+      padding: 5px;
+    }
 
     &.error {
       background: #f88;
     }
   }
 
-  & > * {
+  & > div {
     display: table-row;
 
-    & > * {
+    & > div {
       display: table-cell;
       width: 50%;
-      height: 100%;
     }
 
     .preview {

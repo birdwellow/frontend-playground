@@ -1,6 +1,10 @@
 L3DEditor = (function (L3DEditor) {
 
-  L3DEditor.defaultDefinition = {
+  L3DEditor.Config = {
+    isRotationActive: false
+  };
+
+  L3DEditor.Config.defaultDefinition = {
     "type": "composite",
     "parts": [
       {
@@ -38,5 +42,7 @@ L3DEditor = (function (L3DEditor) {
     // "position": [50, 50, 50],
     "rotation": [5, 5, 5],
   };
+
+  return L3DEditor;
 
 })(L3DEditor || {});

@@ -1,4 +1,4 @@
-(function (THREE) {
+(function (L3DEditor) {
 
   'use strict';
 
@@ -19,4 +19,4 @@
 
 
 
-})(THREE);
+})(L3DEditor || {});

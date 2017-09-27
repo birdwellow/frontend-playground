@@ -18,7 +18,9 @@
   };
 
   function render() {
-    // object.rotateY(0.01);
+    if (L3DEditor.Config && L3DEditor.Config.isRotationActive) {
+      object.rotateY(0.005);
+    }
     cameraControl.update();
     renderer.render(scene, camera);
     requestAnimationFrame(render);
