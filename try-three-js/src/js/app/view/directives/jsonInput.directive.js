@@ -16,12 +16,21 @@
       scope: {
         value: '='
       },
-      controller: function ($scope, $rootScope) {
+      link: function (scope, element) {
+        element.find('textarea').bind('keydown keyup', function (event) {
+          console.log(event);
+        });
+      },
+      controller: function ($scope, $element) {
 
         $scope.$on('reformat', function () {
+          console.log('reformat');
           $scope.value = format($scope.value);
         });
 
+
+        // Format JSON while typing
+        // TODO: Set the caret to the right position
         // $scope.$watch('value', function () {
         //   $scope.value = format($scope.value);
         // });

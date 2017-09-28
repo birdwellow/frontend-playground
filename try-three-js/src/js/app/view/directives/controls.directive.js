@@ -22,6 +22,7 @@
         $scope.format = function () {
           $rootScope.$broadcast('reformat');
         };
+
       }
     };
 
