@@ -5,8 +5,12 @@
 
   angular.module('Editor').directive('jsonInput', function () {
 
+    var stringify = function (object) {
+      return JSON.stringify(object, null, 4);
+    };
+
     var format = function (jsonString) {
-      return JSON.stringify(JSON.parse(jsonString), null, 4);
+      return stringify(JSON.parse(jsonString));
     };
 
     return {
@@ -14,7 +18,8 @@
       templateUrl: 'js/app/view/directives/jsonInput.directive.html',
       replace: true,
       scope: {
-        value: '='
+        value: '=',
+        error: '='
       },
       link: function (scope, element) {
         element.find('textarea').bind('keydown keyup', function (event) {
@@ -23,17 +28,33 @@
       },
       controller: function ($scope, $element) {
 
+        $scope.valueAsString = '';
+
         $scope.$on('reformat', function () {
-          console.log('reformat');
-          $scope.value = format($scope.value);
+          $scope.valueAsString = format($scope.valueAsString);
         });
 
 
         // Format JSON while typing
         // TODO: Set the caret to the right position
-        // $scope.$watch('value', function () {
-        //   $scope.value = format($scope.value);
+        // $scope.$watch('valueAsString', function () {
+        //   $scope.valueAsString = format($scope.valueAsString);
         // });
+
+        $scope.$watch('value', function () {
+          $scope.valueAsString = stringify($scope.value);
+        });
+
+        $scope.$watch('valueAsString', function () {
+          try {
+            $scope.value = JSON.parse($scope.valueAsString);
+            $scope.error = false;
+          } catch (e) {
+            console.log(e.message);
+            $scope.error = true;
+          }
+
+        });
       }
     };
 
