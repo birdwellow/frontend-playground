@@ -18,8 +18,9 @@
         var room = new L3DEditor.Room(nativeElement, scope.definition);
 
         scope.$watch('definition', function () {
+          console.log('update');
           room.update(scope.definition);
-        });
+        }, true);
       }
     };
 

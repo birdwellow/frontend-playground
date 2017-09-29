@@ -14,14 +14,7 @@
       },
       controller: function ($scope, $rootScope) {
 
-        // TODO: Add UI-trigger for auto-format
-        // TODO: Add buttons to insert definitions
-
         $scope.config = L3DEditor.Config;
-
-        $scope.format = function () {
-          $rootScope.$broadcast('reformat');
-        };
 
       }
     };

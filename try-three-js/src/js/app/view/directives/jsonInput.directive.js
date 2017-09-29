@@ -15,16 +15,11 @@
 
     return {
       restrict: 'E',
-      templateUrl: 'js/app/view/directives/jsonInput.directive.html',
+      templateUrl: 'js/app/view/directives/domInput.directive.html',
       replace: true,
       scope: {
         value: '=',
         error: '='
-      },
-      link: function (scope, element) {
-        element.find('textarea').bind('keydown keyup', function (event) {
-          console.log(event);
-        });
       },
       controller: function ($scope, $element) {
 

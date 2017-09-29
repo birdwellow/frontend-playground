@@ -30,7 +30,7 @@ L3DEditor = (function (L3DEditor) {
       },
       {
         "type": "ref",
-        "name": "cannon",
+        "name": "plate",
         "position": [0, 0, 0],
         "repeat": {
           "times": 13,

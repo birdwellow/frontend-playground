@@ -8,7 +8,8 @@
     camera,
     cameraControl,
     renderer,
-    object;
+    object,
+    rotation = 0;
 
   var getDimensions = function (htmlNode) {
     return {
@@ -19,6 +20,7 @@
 
   function render() {
     if (L3DEditor.Config && L3DEditor.Config.isRotationActive) {
+      rotation += 0.005;
       object.rotateY(0.005);
     }
     cameraControl.update();
@@ -89,7 +91,10 @@
 
     render();
 
-    this.update = show;
+    this.update = function (definition) {
+      show(definition);
+      object.rotateY(rotation);
+    }
 
   };
 
