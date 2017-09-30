@@ -1,0 +1,12 @@
+<div class="model {{ model.type }}">
+  <div class="label type">{{ model.type }}</div>
+
+  <input type="text" ng-model="model.name" ng-if="model.name !== undefined">
+
+  <array-input value="model.dimensions" label="'dimensions'"></array-input>
+  <model-input
+    ng-if="model.parts"
+    ng-repeat="(key, part) in model.parts track by $index"
+    model="part">
+  </model-input>
+</div>

@@ -1,0 +1,8 @@
+<form class="array-input">
+  <label ng-if="label">{{ label }}:</label>
+  <input
+    keep-focus
+    type="number"
+    ng-model="value[$index]"
+    ng-repeat="(key, val) in value track by $index">
+</form>

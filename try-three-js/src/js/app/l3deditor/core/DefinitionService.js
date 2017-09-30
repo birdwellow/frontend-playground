@@ -111,6 +111,7 @@ L3DEditor = (function (L3DEditor) {
   };
 
   var compile = function (definition) {
+    definition = L3DEditor.ObjectUtils.copyObject(definition);
     checkDefinitionIsObject(definition);
     if (definition.type === "ref") {
       return compileReferenceDefinition(definition);

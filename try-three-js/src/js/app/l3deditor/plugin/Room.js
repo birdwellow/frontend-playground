@@ -66,7 +66,7 @@
         scene.remove(object);
       }
       var compiledDefinition = L3DEditor.DefinitionService.compile(rawDefinition);
-      object = L3DEditor.ConfigurableCompoundMeshBuilder.create(rawDefinition);
+      object = L3DEditor.ConfigurableCompoundMeshBuilder.create(compiledDefinition);
       scene.add(object);
     } catch (e) {
       console.error(e);
@@ -81,8 +81,7 @@
     scene = new THREE.Scene();
     camera = createCamera(scene);
 
-    var definitionCopy = L3DEditor.ObjectUtils.copyObject(definitions);
-    show(definitionCopy);
+    show(definitions);
 
     scene.add(createDirectionalLight());
     scene.add(createAmbientLight());

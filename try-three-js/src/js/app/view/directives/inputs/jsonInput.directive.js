@@ -15,7 +15,7 @@
 
     return {
       restrict: 'E',
-      templateUrl: 'js/app/view/directives/domInput.directive.html',
+      templateUrl: 'js/app/view/directives/inputs/jsonInput.directive.html',
       replace: true,
       scope: {
         value: '=',
