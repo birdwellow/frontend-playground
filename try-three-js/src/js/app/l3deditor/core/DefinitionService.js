@@ -53,7 +53,10 @@ L3DEditor = (function (L3DEditor) {
     if (!definitionTemplate) {
       throw new TemplateException('No template with name "' + definitionName + '" defined');
     }
-    return L3DEditor.ObjectUtils.copyObject(definitionTemplate);
+    definitionTemplate = L3DEditor.ObjectUtils.copyObject(definitionTemplate);
+    var masterTemplate = getMasterTemplate();
+    L3DEditor.ObjectUtils.copyObjectFields(masterTemplate, definitionTemplate);
+    return definitionTemplate;
   };
 
   var getMasterTemplate = function () {
@@ -226,9 +229,7 @@ L3DEditor = (function (L3DEditor) {
   };
 
   var sanitize = function (definition) {
-    var masterTemplate = getMasterTemplate();
     var definitionTemplate = getDefinitionTemplate(definition.type);
-    L3DEditor.ObjectUtils.copyObjectFields(masterTemplate, definitionTemplate);
 
     sanitizeFromTemplate(definition, definitionTemplate);
 

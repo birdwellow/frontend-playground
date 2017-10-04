@@ -29,4 +29,9 @@
     ng-repeat="(key, part) in model.parts track by $index"
     model="part">
   </model-input>
+
+  <button
+    class="add-button"
+    ng-if="model.parts"
+    ng-click="addPart()">+</button>
 </div>
