@@ -1,4 +1,4 @@
-(function () {
+(function (L3DEditor) {
 
   'use strict';
 
@@ -10,10 +10,17 @@
       templateUrl: 'js/app/view/directives/inputs/modelInput.directive.html',
       replace: true,
       scope: {
-        model: '='
+        model: '=',
+        exchange: '='
+      },
+      controller: function ($scope) {
+
+        $scope.refNames = L3DEditor.DefinitionService.getCatalogDefinitionNames;
+        $scope.typeNames = L3DEditor.DefinitionService.getDefinitionTemplateNames;
+
       }
     };
 
   });
 
-})();
+})(L3DEditor);

@@ -2,6 +2,65 @@ L3DEditor = (function (L3DEditor) {
 
   'use strict';
 
+  var masterTemplate = {
+    "type": "box",
+    "position": [0, 0, 0],
+    "rotation": [0, 0, 0],
+    "repeat": {
+      "times": 1,
+      "position": [0, 0, 0],
+      "rotation": [0, 0, 0]
+    },
+    "_dustbin": {}
+  };
+
+  var definitionTemplates = {
+    "box": {
+      "dimensions": [10, 10, 10]
+    },
+    "cylinder": {
+      "radii": [10, 15],
+      "height": 10
+    },
+    "extrude": {
+      "points": [
+        [-45, 0],
+        [65, 0],
+        [65, 10],
+        [30, 15],
+        [-45, 15]
+      ],
+      "width": 44
+    },
+    "composite": {
+      "parts": []
+    },
+    "ref": {
+      "name": "plate"
+    }
+  };
+
+  var getDefinitionTemplateNames = function () {
+    return Object.keys(definitionTemplates);
+  };
+
+  var getCatalogDefinitionNames = function () {
+    return Object.keys(L3DEditor.Catalog);
+  };
+
+  var getDefinitionTemplate = function (definitionName) {
+    var definitionTemplate = definitionTemplates[definitionName];
+    if (!definitionTemplate) {
+      throw new TemplateException('No template with name "' + definitionName + '" defined');
+    }
+    return L3DEditor.ObjectUtils.copyObject(definitionTemplate);
+  };
+
+  var getMasterTemplate = function () {
+    return L3DEditor.ObjectUtils.copyObject(masterTemplate);
+  };
+
+
   /*
 
   There are three types of definition:
@@ -29,7 +88,6 @@ L3DEditor = (function (L3DEditor) {
    */
 
 
-
   var checkDefinitionIsObject = function (test) {
     if (!L3DEditor.ObjectUtils.isObject(test)) {
       throw new CompilationException("Definition (or part of a defintion) is not an object: " + test);
@@ -38,7 +96,7 @@ L3DEditor = (function (L3DEditor) {
 
   var findForName = function(name) {
     // TODO: Search in main definition, too
-    var referredDefinition = L3DEditor.Catalogue[name];
+    var referredDefinition = L3DEditor.Catalog[name];
     if (referredDefinition === undefined) {
       throw new CompilationException("No object found for reference name '" + name + "'");
     }
@@ -48,7 +106,7 @@ L3DEditor = (function (L3DEditor) {
   var compileReferenceDefinition = function (definition) {
     var name = definition.name;
     var referredDefinition = findForName(name);
-    var referredDefinition = L3DEditor.ObjectUtils.copyObject(referredDefinition);
+    referredDefinition = L3DEditor.ObjectUtils.copyObject(referredDefinition);
     L3DEditor.ObjectUtils.copyObjectFields(definition, referredDefinition, ["type", "name"]);
     return compile(referredDefinition);
   };
@@ -111,7 +169,6 @@ L3DEditor = (function (L3DEditor) {
   };
 
   var compile = function (definition) {
-    definition = L3DEditor.ObjectUtils.copyObject(definition);
     checkDefinitionIsObject(definition);
     if (definition.type === "ref") {
       return compileReferenceDefinition(definition);
@@ -121,9 +178,74 @@ L3DEditor = (function (L3DEditor) {
     return definition;
   };
 
+  var copyAndCompile = function (definition) {
+    definition = L3DEditor.ObjectUtils.copyObject(definition);
+    return compile(definition);
+  };
+
+  var complementMissingFields = function (definition, template) {
+    for (var key in template) {
+      if (key === '_dustbin') {
+        continue;
+      }
+      if (definition[key] === undefined) {
+        definition[key] = template[key];
+      }
+    }
+  };
+
+  var backupAndRemoveExcessFields = function (definition, template) {
+    for (var key in definition) {
+      if (key === '_dustbin') {
+        continue;
+      }
+      if (template[key] === undefined) {
+        definition._dustbin = definition._dustbin || {};
+        definition._dustbin[key] = definition[key];
+        console.log('deleting ' + key + ': ' + definition[key]);
+        delete definition[key];
+      }
+    }
+  };
+
+  var restoreBackuppedFields = function (definition, template) {
+    if (!definition._dustbin) {
+      return;
+    }
+    for (var key in definition._dustbin) {
+      if (template.hasOwnProperty(key)) {
+        definition[key] = definition._dustbin[key];
+      }
+    }
+  };
+
+  var sanitizeFromTemplate = function (definition, template) {
+    complementMissingFields(definition, template);
+    backupAndRemoveExcessFields(definition, template);
+    restoreBackuppedFields(definition, template);
+  };
+
+  var sanitize = function (definition) {
+    var masterTemplate = getMasterTemplate();
+    var definitionTemplate = getDefinitionTemplate(definition.type);
+    L3DEditor.ObjectUtils.copyObjectFields(masterTemplate, definitionTemplate);
+
+    sanitizeFromTemplate(definition, definitionTemplate);
+
+    if (definition.parts) {
+      for (var i in definition.parts) {
+        sanitize(definition.parts[i]);
+      }
+    }
+  };
+
   L3DEditor.DefinitionService = {
     findForName: findForName,
-    compile: compile
+    compile: copyAndCompile,
+    getDefinitionTemplateNames: getDefinitionTemplateNames,
+    getDefinitionTemplate: getDefinitionTemplate,
+    getCatalogDefinitionNames: getCatalogDefinitionNames,
+    sanitize: sanitize
   };
 
   return L3DEditor;

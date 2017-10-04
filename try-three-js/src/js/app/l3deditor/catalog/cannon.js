@@ -3,9 +3,9 @@ var L3DEditor = (function(L3DEditor) {
   'use strict';
 
 
-  var Catalogue = L3DEditor.Catalogue || {};
+  var Catalog = L3DEditor.Catalog || {};
 
-  Catalogue.cannon = {
+  Catalog.cannon = {
     "type": "composite",
     "parts": [
       {
@@ -53,7 +53,7 @@ var L3DEditor = (function(L3DEditor) {
     ]
   };
 
-  L3DEditor.Catalogue = Catalogue;
+  L3DEditor.Catalog = Catalog;
 
   return L3DEditor;
 

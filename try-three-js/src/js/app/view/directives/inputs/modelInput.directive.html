@@ -1,9 +1,29 @@
 <div class="model {{ model.type }}">
-  <div class="label type">{{ model.type }}</div>
 
-  <input type="text" ng-model="model.name" ng-if="model.name !== undefined">
+  <!--<div class="label type">{{ model.type }}</div>-->
+
+  <form class="enum-input">
+    <!--<label ng-if="label">{{ label }}:</label>-->
+    <select
+      ng-if="model.type"
+      ng-model="model.type"
+      ng-options="typeName for typeName in typeNames()">
+    </select>
+  </form>
+
+  <!--<input type="text" ng-model="model.name" ng-if="model.name !== undefined">-->
+
+  <form class="enum-input">
+    <label ng-if="label">{{ label }}:</label>
+    <select
+      ng-if="model.name"
+      ng-model="model.name"
+      ng-options="refName for refName in refNames()">
+    </select>
+  </form>
 
   <array-input value="model.dimensions" label="'dimensions'"></array-input>
+
   <model-input
     ng-if="model.parts"
     ng-repeat="(key, part) in model.parts track by $index"
