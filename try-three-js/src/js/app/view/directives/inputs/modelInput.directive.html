@@ -1,28 +1,9 @@
 <div class="model {{ model.type }}">
 
-  <!--<div class="label type">{{ model.type }}</div>-->
-
-  <form class="enum-input">
-    <!--<label ng-if="label">{{ label }}:</label>-->
-    <select
-      ng-if="model.type"
-      ng-model="model.type"
-      ng-options="typeName for typeName in typeNames()">
-    </select>
-  </form>
-
-  <!--<input type="text" ng-model="model.name" ng-if="model.name !== undefined">-->
-
-  <form class="enum-input">
-    <label ng-if="label">{{ label }}:</label>
-    <select
-      ng-if="model.name"
-      ng-model="model.name"
-      ng-options="refName for refName in refNames()">
-    </select>
-  </form>
-
-  <array-input value="model.dimensions" label="'dimensions'"></array-input>
+  <enum-input class="type" value="model.type" enum-values="typeNames"></enum-input>
+  <enum-input class="name" value="model.name" enum-values="refNames"></enum-input>
+  <array-input ng-if="model.dimensions" value="model.dimensions" label="'dimensions'"></array-input>
+  <array-input ng-if="model.radii" value="model.radii" label="'radii'"></array-input>
 
   <model-input
     ng-if="model.parts"
@@ -31,7 +12,8 @@
   </model-input>
 
   <button
-    class="add-button"
+    class="button add"
     ng-if="model.parts"
     ng-click="addPart()">+</button>
+
 </div>

@@ -15,8 +15,8 @@
       },
       controller: function ($scope) {
 
-        $scope.refNames = L3DEditor.DefinitionService.getCatalogDefinitionNames;
-        $scope.typeNames = L3DEditor.DefinitionService.getDefinitionTemplateNames;
+        $scope.refNames = L3DEditor.DefinitionService.getCatalogDefinitionNames();
+        $scope.typeNames = L3DEditor.DefinitionService.getDefinitionTemplateNames();
 
         $scope.addPart = function () {
           var newPart = L3DEditor.DefinitionService.getDefinitionTemplate('box');

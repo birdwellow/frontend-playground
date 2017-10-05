@@ -1,0 +1,8 @@
+<div class="input enum">
+  <label ng-if="label">{{ label }}:</label>
+  <select
+    ng-if="value !== undefined"
+    ng-model="value"
+    ng-options="enumValue for enumValue in enumValues">
+  </select>
+</div>
