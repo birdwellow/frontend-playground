@@ -199,13 +199,12 @@ L3DEditor = (function (L3DEditor) {
 
   var backupAndRemoveExcessFields = function (definition, template) {
     for (var key in definition) {
-      if (key === '_dustbin') {
+      if (key === '_dustbin' || key === '_parts') {
         continue;
       }
       if (template[key] === undefined) {
         definition._dustbin = definition._dustbin || {};
         definition._dustbin[key] = definition[key];
-        console.log('deleting ' + key + ': ' + definition[key]);
         delete definition[key];
       }
     }
@@ -219,6 +218,33 @@ L3DEditor = (function (L3DEditor) {
       if (template.hasOwnProperty(key)) {
         definition[key] = definition._dustbin[key];
       }
+    }
+  };
+
+  var backupPart = function (model, part) {
+    if (!model || !Array.isArray(model.parts)) {
+      // TODO: Error handling
+      return;
+    }
+    var index = model.parts.indexOf(part);
+    model.parts.splice(index, 1);
+    if (!Array.isArray(model._parts)) {
+      model._parts = model._parts || [];
+    }
+    model._parts.push(part);
+  };
+
+  var restoreLastPart = function (model) {
+    if (!model || !Array.isArray(model.parts) || !Array.isArray(model._parts)) {
+      // TODO: Error handling
+      return;
+    }
+    var lastIndex = model._parts.length - 1;
+    var part = model._parts[lastIndex];
+    model._parts.splice(lastIndex, 1);
+    model.parts.push(part);
+    if(model._parts.length === 0) {
+      delete model._parts;
     }
   };
 
@@ -246,6 +272,8 @@ L3DEditor = (function (L3DEditor) {
     getDefinitionTemplateNames: getDefinitionTemplateNames,
     getDefinitionTemplate: getDefinitionTemplate,
     getCatalogDefinitionNames: getCatalogDefinitionNames,
+    backupPart: backupPart,
+    restoreLastPart: restoreLastPart,
     sanitize: sanitize
   };
 

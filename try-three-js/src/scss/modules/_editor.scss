@@ -108,6 +108,11 @@
     width: 100%;
   }
 
+  &.restore {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
   &.remove {
     border: none;
     display: inline;

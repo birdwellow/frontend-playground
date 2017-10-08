@@ -23,6 +23,23 @@
           $scope.model.parts.push(newPart);
         };
 
+        // emitted by child
+        $scope.remove = function (part) {
+          $scope.$emit('remove-part', part);
+        };
+
+        // caught by parent
+        $scope.$on('remove-part', function (event, part) {
+          if ($scope.model.parts && $scope.model.parts.indexOf(part) !== -1) {
+            event.stopPropagation();
+            L3DEditor.DefinitionService.backupPart($scope.model, part);
+          }
+        });
+
+        $scope.restore = function() {
+          L3DEditor.DefinitionService.restoreLastPart($scope.model);
+        };
+
       }
     };
 

@@ -15,6 +15,11 @@
   </model-input>
 
   <button
+    class="button restore"
+    ng-if="model._parts"
+    ng-click="restore()">Restore</button>
+
+  <button
     class="button add"
     ng-if="model.parts"
     ng-click="addPart()">+</button>
