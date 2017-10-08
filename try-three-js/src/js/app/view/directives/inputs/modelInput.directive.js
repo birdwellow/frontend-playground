@@ -3,6 +3,18 @@
   'use strict';
 
 
+  var refNames = L3DEditor.DefinitionService.getCatalogDefinitionNames();
+  var typeNames = L3DEditor.DefinitionService.getDefinitionTemplateNames();
+
+  var isArrayField = function(field, value) {
+    if(field.indexOf('_') !== -1
+      || field === 'parts'
+      || field === 'points') {
+      return false;
+    }
+    return Array.isArray(value);
+  };
+
   angular.module('Editor').directive('modelInput', function () {
 
     return {
@@ -15,8 +27,8 @@
       },
       controller: function ($scope) {
 
-        $scope.refNames = L3DEditor.DefinitionService.getCatalogDefinitionNames();
-        $scope.typeNames = L3DEditor.DefinitionService.getDefinitionTemplateNames();
+        $scope.refNames = refNames;
+        $scope.typeNames = typeNames;
 
         $scope.addPart = function () {
           var newPart = L3DEditor.DefinitionService.getDefinitionTemplate('box');
@@ -39,6 +51,8 @@
         $scope.restore = function() {
           L3DEditor.DefinitionService.restoreLastPart($scope.model);
         };
+
+        $scope.isArrayField = isArrayField;
 
       }
     };

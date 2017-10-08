@@ -1,12 +1,15 @@
 <div class="model {{ model.type }}">
 
-  <button class="button remove" ng-click="remove(model)">x</button>
+  <button class="button remove" ng-click="remove(model)">X</button>
   <enum-input class="type" model="model" field="type" enum-values="typeNames"></enum-input>
-
   <enum-input class="name" model="model" field="name" enum-values="refNames"></enum-input>
 
-  <array-input ng-if="model.dimensions" value="model.dimensions" label="'dimensions'"></array-input>
-  <array-input ng-if="model.radii" value="model.radii" label="'radii'"></array-input>
+  <div ng-repeat="(field, value) in model">
+    <array-input
+      ng-if="isArrayField(field, value)"
+      value="model[field]"
+      label="field"></array-input>
+  </div>
 
   <model-input
     ng-if="model.parts"

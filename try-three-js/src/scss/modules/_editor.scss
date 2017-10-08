@@ -59,6 +59,8 @@
 
 .input {
 
+  display: inline-block;
+
   input[type=number] {
     width: 65px;
     margin-left: 10px;
@@ -69,22 +71,23 @@
   }
 
   select {
-    background: none;
-    color: #fff;
     padding: 5px;
     border: 1px solid #fff;
-  }
-
-  &.enum.type select {
     background: rgba(255,255,255,0.25);
-    border: none;
     color: #fff;
     margin-bottom: 10px;
     font-size: 1.2em;
   }
 
+  &.enum.type select {
+  }
+
   label {
     width: 100px;
+  }
+
+  &.array {
+    margin-top: 5px;
   }
 
 }
@@ -114,9 +117,13 @@
   }
 
   &.remove {
-    border: none;
+    visibility: hidden;
     display: inline;
     padding: 5px 10px;
     float: right;
+
+    :hover > & {
+      visibility: visible;
+    }
   }
 }
