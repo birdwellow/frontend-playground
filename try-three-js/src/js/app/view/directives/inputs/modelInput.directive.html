@@ -1,7 +1,10 @@
 <div class="model {{ model.type }}">
 
-  <enum-input class="type" value="model.type" enum-values="typeNames"></enum-input>
-  <enum-input class="name" value="model.name" enum-values="refNames"></enum-input>
+  <button class="button remove" ng-click="remove(model)">x</button>
+  <enum-input class="type" model="model" field="type" enum-values="typeNames"></enum-input>
+
+  <enum-input class="name" model="model" field="name" enum-values="refNames"></enum-input>
+
   <array-input ng-if="model.dimensions" value="model.dimensions" label="'dimensions'"></array-input>
   <array-input ng-if="model.radii" value="model.radii" label="'radii'"></array-input>
 

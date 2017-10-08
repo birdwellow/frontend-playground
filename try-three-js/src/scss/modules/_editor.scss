@@ -76,9 +76,9 @@
   }
 
   &.enum.type select {
-    background: #fff;
+    background: rgba(255,255,255,0.25);
     border: none;
-    color: #005855;
+    color: #fff;
     margin-bottom: 10px;
     font-size: 1.2em;
   }
@@ -89,8 +89,7 @@
 
 }
 
-.button.add {
-  width: 100%;
+.button {
   background: none;
   border: 1px solid #fff;
   color: #fff;
@@ -103,7 +102,16 @@
 
   &:active {
     background: rgba(0, 0, 0, 0.25);
-    padding: 12px 8px 8px 12px;
-    box-shadow: inset 3px 3px 3px rgba(0, 0, 0, 0.75);
+  }
+
+  &.add {
+    width: 100%;
+  }
+
+  &.remove {
+    border: none;
+    display: inline;
+    padding: 5px 10px;
+    float: right;
   }
 }

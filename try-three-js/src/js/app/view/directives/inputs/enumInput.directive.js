@@ -11,7 +11,8 @@
       replace: true,
       scope: {
         label: '=',
-        value: '=',
+        model: '=',
+        field: '@',
         enumValues: '='
       }
     };
