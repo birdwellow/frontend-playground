@@ -3,14 +3,14 @@
   'use strict';
 
 
-  angular.module('Editor').directive('arrayInput', function () {
+  angular.module('Editor').directive('objectInput', function () {
 
     return {
       restrict: 'E',
-      templateUrl: 'js/app/view/directives/inputs/arrayInput.directive.html',
+      templateUrl: 'js/app/view/directives/inputs/objectInput.directive.html',
       replace: true,
       scope: {
-        array: '=',
+        object: '=',
         label: '@'
       }
     };

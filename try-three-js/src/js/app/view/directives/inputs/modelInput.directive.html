@@ -4,12 +4,28 @@
   <enum-input class="type" model="model" field="type" enum-values="typeNames"></enum-input>
   <enum-input class="name" model="model" field="name" enum-values="refNames"></enum-input>
 
-  <div ng-repeat="(field, value) in model">
-    <array-input
-      ng-if="isArrayField(field, value)"
-      value="model[field]"
-      label="field"></array-input>
-  </div>
+  <simple-input value="model.height" label="height"></simple-input>
+  <simple-input value="model.width" label="width"></simple-input>
+  <array-input array="model.radii" label="radii"></array-input>
+  <array-input array="model.dimensions" label="dimensions"></array-input>
+  <array-input array="model.position" label="position"></array-input>
+  <array-input array="model.rotation" label="rotation"></array-input>
+
+  <object-input object="model.repeat" label="repeat"></object-input>
+
+
+
+<!--
+  <array-input array="model.position"
+               label="'position'"></array-input>
+
+  <simple-input value="model[field]"
+                label="field"></simple-input>
+
+  <object-input object="model[field]"
+                label="field"></object-input>
+-->
+
 
   <model-input
     ng-if="model.parts"

@@ -33,7 +33,8 @@ L3DEditor = (function (L3DEditor) {
       "width": 44
     },
     "composite": {
-      "parts": []
+      "parts": [],
+      "_parts": []
     },
     "ref": {
       "name": "plate"

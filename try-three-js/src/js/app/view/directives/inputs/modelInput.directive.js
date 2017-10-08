@@ -6,15 +6,6 @@
   var refNames = L3DEditor.DefinitionService.getCatalogDefinitionNames();
   var typeNames = L3DEditor.DefinitionService.getDefinitionTemplateNames();
 
-  var isArrayField = function(field, value) {
-    if(field.indexOf('_') !== -1
-      || field === 'parts'
-      || field === 'points') {
-      return false;
-    }
-    return Array.isArray(value);
-  };
-
   angular.module('Editor').directive('modelInput', function () {
 
     return {
@@ -51,8 +42,6 @@
         $scope.restore = function() {
           L3DEditor.DefinitionService.restoreLastPart($scope.model);
         };
-
-        $scope.isArrayField = isArrayField;
 
       }
     };
