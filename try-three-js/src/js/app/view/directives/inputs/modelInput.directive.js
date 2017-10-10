@@ -3,7 +3,7 @@
   'use strict';
 
 
-  var refNames = L3DEditor.DefinitionService.getCatalogDefinitionNames();
+  var refNames = L3DEditor.Catalog.getNames();
   var typeNames = L3DEditor.DefinitionService.getDefinitionTemplateNames();
 
   angular.module('Editor').directive('modelInput', function () {

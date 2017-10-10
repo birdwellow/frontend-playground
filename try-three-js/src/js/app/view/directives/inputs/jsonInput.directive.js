@@ -45,7 +45,7 @@
             $scope.value = JSON.parse($scope.valueAsString);
             $scope.error = false;
           } catch (e) {
-            console.log(e.message);
+            console.log(e);
             $scope.error = true;
           }
 

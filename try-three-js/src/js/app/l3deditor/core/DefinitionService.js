@@ -45,14 +45,10 @@ L3DEditor = (function (L3DEditor) {
     return Object.keys(definitionTemplates);
   };
 
-  var getCatalogDefinitionNames = function () {
-    return Object.keys(L3DEditor.Catalog);
-  };
-
   var getDefinitionTemplate = function (definitionName) {
     var definitionTemplate = definitionTemplates[definitionName];
     if (!definitionTemplate) {
-      throw new TemplateException('No template with name "' + definitionName + '" defined');
+      throw 'No template with name "' + definitionName + '" defined';
     }
     definitionTemplate = L3DEditor.ObjectUtils.copyObject(definitionTemplate);
     var masterTemplate = getMasterTemplate();
@@ -94,22 +90,13 @@ L3DEditor = (function (L3DEditor) {
 
   var checkDefinitionIsObject = function (test) {
     if (!L3DEditor.ObjectUtils.isObject(test)) {
-      throw new CompilationException("Definition (or part of a defintion) is not an object: " + test);
+      throw "Definition (or part of a defintion) is not an object: " + test;
     }
-  };
-
-  var findForName = function(name) {
-    // TODO: Search in main definition, too
-    var referredDefinition = L3DEditor.Catalog[name];
-    if (referredDefinition === undefined) {
-      throw new CompilationException("No object found for reference name '" + name + "'");
-    }
-    return referredDefinition
   };
 
   var compileReferenceDefinition = function (definition) {
     var name = definition.name;
-    var referredDefinition = findForName(name);
+    var referredDefinition = L3DEditor.Catalog.get(name);
     referredDefinition = L3DEditor.ObjectUtils.copyObject(referredDefinition);
     L3DEditor.ObjectUtils.copyObjectFields(definition, referredDefinition, ["type", "name"]);
     return compile(referredDefinition);
@@ -268,11 +255,9 @@ L3DEditor = (function (L3DEditor) {
   };
 
   L3DEditor.DefinitionService = {
-    findForName: findForName,
     compile: copyAndCompile,
     getDefinitionTemplateNames: getDefinitionTemplateNames,
     getDefinitionTemplate: getDefinitionTemplate,
-    getCatalogDefinitionNames: getCatalogDefinitionNames,
     backupPart: backupPart,
     restoreLastPart: restoreLastPart,
     sanitize: sanitize

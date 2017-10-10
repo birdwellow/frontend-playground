@@ -5,7 +5,7 @@ THREE = (function (THREE) {
 
   var checkCondition = function (evaluatedCondition, checkFailureMessage) {
     if (!evaluatedCondition) {
-      throw new InstantiationException(checkFailureMessage);
+      throw checkFailureMessage;
     }
   };
 

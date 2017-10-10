@@ -56,13 +56,13 @@ L3DEditor = (function (THREE, L3DEditor) {
     createFromDefinition: function (definition) {
       var type = definition.type;
       if (!type) {
-        throw new InstantiationException('"' + type + '" is not a valid type');
+        throw '"' + type + '" is not a valid type';
       }
 
       var factory = factories[type];
 
       if(!factory){
-        throw new InstantiationException('No factory exists for type "' + type + '"');
+        throw 'No factory exists for type "' + type + '"';
       }
 
       return factory(definition);

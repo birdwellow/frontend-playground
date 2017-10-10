@@ -142,8 +142,31 @@
   }
 }
 
+.notification {
+  color: #fff;
+  float: right;
+}
+
 .error {
   padding: 5px;
   margin: 5px;
   background: #f77;
+
+  &.notification {
+    margin: 0;
+  }
+}
+
+.success {
+  padding: 5px;
+  margin: 5px;
+  color: #3a3;
+
+  &.notification {
+    margin: 0;
+  }
+}
+
+input.save {
+  width: 150px;
 }

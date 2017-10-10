@@ -8,15 +8,7 @@
     return {
       restrict: 'E',
       templateUrl: 'js/app/view/directives/controls.directive.html',
-      replace: true,
-      scope: {
-        error: '='
-      },
-      controller: function ($scope, $rootScope) {
-
-        $scope.config = L3DEditor.Config;
-
-      }
+      replace: true
     };
 
   });

@@ -4,8 +4,9 @@ var L3DEditor = (function(L3DEditor) {
 
 
   var Catalog = L3DEditor.Catalog || {};
+  Catalog.repository = Catalog.repository || {};
 
-  Catalog.plate = {
+  Catalog.repository.plate = {
     "type": "composite",
     "parts": [
       {
