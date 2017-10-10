@@ -24,9 +24,21 @@ L3DEditor = (function (L3DEditor) {
             "name": "plate",
             "position": [5, 5, 5],
             "rotation": [0, 45, 90],
+          },
+          {
+            "type": "extrude",
+            "points": [
+              [-45, 0],
+              [65, 0],
+              [65, 10],
+              [30, 15],
+              [-45, 15]
+            ],
+            "width": 44,
+            "position": [0, -10, -22]
           }
         ],
-        "position": [-85, 2, 17.5]
+        "position": [-85, 2, 17]
       },
       {
         "type": "ref",

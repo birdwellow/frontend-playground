@@ -88,6 +88,10 @@
 
   &.array {
     margin-top: 5px;
+
+    &.two-dim .array {
+      display: inline-block;
+    }
   }
 
 }
@@ -109,6 +113,11 @@
 
   &.add {
     width: 100%;
+
+    .array & {
+      width: 150px;
+      margin: 10px;
+    }
   }
 
   &.restore {
@@ -125,5 +134,16 @@
     :hover > & {
       visibility: visible;
     }
+
+    .array & {
+      display: inline;
+      float: none;
+    }
   }
+}
+
+.error {
+  padding: 5px;
+  margin: 5px;
+  background: #f77;
 }
