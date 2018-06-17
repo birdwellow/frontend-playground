@@ -6,7 +6,7 @@ _Note: the Ionic Super Starter requires Ionic CLI 3._
 
 The Ionic Super Starter is a batteries-included starter project for Ionic apps complete with pre-built pages, providers, and best practices for Ionic development.
 
-The goal of the Super Starter is to get you from zero to app store faster than before, with a set of opinions from the Ionic team around page layout, data/user management, and project structure.
+The goal of the Super Starter is to get you from zero to app store faster than before, with a set of opinions from the Ionic team around page layout, data/account management, and project structure.
 
 The way to use this starter is to pick and choose the various page types you want use, and remove the ones you don't. If you want a blank slate, this starter isn't for you (use the `blank` type instead).
 
@@ -31,11 +31,11 @@ ionic start mySuperApp super
 
 The Super Starter comes with a variety of ready-made pages. These pages help you assemble common building blocks for your app so you can focus on your unique features and branding.
 
-The app loads with the `FirstRunPage` set to `TutorialPage` as the default. If the user has already gone through this page once, it will be skipped the next time they load the app.
+The app loads with the `FirstRunPage` set to `TutorialPage` as the default. If the account has already gone through this page once, it will be skipped the next time they load the app.
 
-If the tutorial is skipped but the user hasn't logged in yet, the Welcome page will be displayed which is a "splash" prompting the user to log in or create an account.
+If the tutorial is skipped but the account hasn't logged in yet, the Welcome page will be displayed which is a "splash" prompting the account to log in or create an account.
 
-Once the user is authenticated, the app will load with the `MainPage` which is set to be the `TabsPage` as the default.
+Once the account is authenticated, the app will load with the `MainPage` which is set to be the `TabsPage` as the default.
 
 The entry and main pages can be configured easily by updating the corresponding variables in [src/pages/pages.ts](https://github.com/ionic-team/ionic-starter-super/blob/master/src/pages/pages.ts).
 
