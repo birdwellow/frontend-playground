@@ -3,7 +3,7 @@
 ## Project setup and Gulp installation
 FastShell utilises open source components running on the Terminal/command-line for it's workflow, you'll need to install Node and Gulp. Here's a walkthrough of how to get a project up and running in minutes. Once Node and Gulp are installed all future projects running Gulp are instant.
 
-1. Install [Node.js](http://nodejs.org/download), [Sass](http://sass-lang.com/tutorial.html) and [Git](http://git-scm.com) on your machine. If you're a Windows user you'll also need to install [Ruby](http://rubyinstaller.org/downloads).
+1. Install [Node.js](http://nodejs.org/download), [Sass](http://sass-lang.com/tutorial.html) and [Git](http://git-scm.com) on your machine. If you're a Windows account you'll also need to install [Ruby](http://rubyinstaller.org/downloads).
 2. [Install Gulp](http://Gulpjs.com/) using `npm install -g gulp`. You may need to use `sudo` in front of the Gulp install command to give it permissions.
 3. Fork/Clone/Download the FastShell repository into your machine, you should hopefully see all the files and folders.
 4. Open Terminal and install FastShell's dependencies to `node_modules` directory in your project directory using `npm install`. You don't need `sudo` to do this.
